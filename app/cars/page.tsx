@@ -175,10 +175,10 @@ export default function CarsPage() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-12"
         >
-          <div className={`relative overflow-hidden rounded-3xl border-2 ${
+          <div className={`relative overflow-hidden rounded-3xl border-2 border-sky-300 ${
             resolvedTheme === 'dark'
-              ? 'bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90 border-slate-700'
-              : 'bg-gradient-to-br from-white/90 via-slate-50/90 to-white/90 border-slate-200'
+              ? 'bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90'
+              : 'bg-gradient-to-br from-white/90 via-slate-50/90 to-white/90'
           } backdrop-blur-xl shadow-2xl`}>
             {/* Decorative Elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-red-500/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
@@ -219,10 +219,10 @@ export default function CarsPage() {
                           placeholder="City or airport"
                           value={location}
                           onChange={(e) => setLocation(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 border-slate-700 focus:border-red-500 focus:ring-red-500/20 text-white placeholder-slate-500'
-                              : 'bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/20 text-slate-900 placeholder-slate-400'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white placeholder-slate-500'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900 placeholder-slate-400'
                           }`}
                         />
                       </div>
@@ -242,10 +242,10 @@ export default function CarsPage() {
                         <select
                           value={selectedType}
                           onChange={(e) => setSelectedType(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 border-slate-700 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
                           }`}
                           style={{ backgroundColor: 'transparent' }}
                         >
@@ -276,10 +276,10 @@ export default function CarsPage() {
                           type="date"
                           value={pickupDate}
                           onChange={(e) => setPickupDate(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 border-slate-700 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
                           } [color-scheme:dark]`}
                         />
                       </div>
@@ -300,10 +300,10 @@ export default function CarsPage() {
                           type="date"
                           value={returnDate}
                           onChange={(e) => setReturnDate(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 border-slate-700 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
                           } [color-scheme:dark]`}
                         />
                       </div>
@@ -343,10 +343,10 @@ export default function CarsPage() {
                           placeholder="City or area"
                           value={location}
                           onChange={(e) => setLocation(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 border-slate-700 focus:border-red-500 focus:ring-red-500/20 text-white placeholder-slate-500'
-                              : 'bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/20 text-slate-900 placeholder-slate-400'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white placeholder-slate-500'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900 placeholder-slate-400'
                           }`}
                         />
                       </div>
@@ -366,10 +366,10 @@ export default function CarsPage() {
                         <select
                           value={priceRange}
                           onChange={(e) => setPriceRange(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 border-slate-700 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
                           }`}
                           style={{ backgroundColor: 'transparent' }}
                         >
@@ -397,10 +397,10 @@ export default function CarsPage() {
                         <select
                           value={selectedType}
                           onChange={(e) => setSelectedType(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 border-slate-700 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white border-slate-200 focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
                           }`}
                           style={{ backgroundColor: 'transparent' }}
                         >

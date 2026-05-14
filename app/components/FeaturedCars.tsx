@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Users, Fuel, Gauge, ChevronRight, Check, Key, ClipboardCheck, Star } from "lucide-react";
+import { Heart, Users, Fuel, Gauge, ChevronRight, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { localCars } from "../../data/carData";
 
@@ -14,11 +14,6 @@ const featuredCars = localCars.slice(0, 4);
 export default function FeaturedCars() {
   const { resolvedTheme } = useTheme();
   const [wishlist, setWishlist] = useState<number[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const toggleWishlist = (id: number) => {
     setWishlist((prev) =>
@@ -49,7 +44,6 @@ export default function FeaturedCars() {
         </div>
 
         {/* Car Grid - Enhanced Design with Larger Images */}
-        {mounted ? (
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           initial="hidden"
@@ -85,13 +79,13 @@ export default function FeaturedCars() {
                   : 'bg-white border-slate-200 hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-500/20'
               } backdrop-blur-xl`}
             >
-              {/* Image Container - Larger */}
-              <div className="relative h-40 bg-slate-800 overflow-hidden">
+              {/* Image Container - More Visible */}
+              <div className="relative h-64 bg-slate-800 overflow-hidden">
                 <Image
                   src={car.image}
                   alt={car.name}
                   fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700 brightness-110 contrast-105 saturate-110"
                   priority
                 />
                 {/* Overlay Gradient */}
@@ -288,45 +282,6 @@ export default function FeaturedCars() {
             </motion.div>
           ))}
         </motion.div>
-        ) : (
-          // Static fallback for SSR
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredCars.map((car) => (
-              <div
-                key={car.id}
-                className={`group relative flex flex-col rounded-3xl overflow-hidden border-2 h-full ${
-                  resolvedTheme === 'dark'
-                    ? 'bg-slate-900/80 border-slate-800'
-                    : 'bg-white border-slate-200'
-                }`}
-              >
-                <div className="relative h-40 bg-slate-800 overflow-hidden">
-                  <Image
-                    src={car.image}
-                    alt={car.name}
-                    fill
-                    className="object-cover"
-                    priority
-                  />
-                  <div className={`absolute top-3 left-3 px-4 py-2 rounded-full text-xs font-bold backdrop-blur-md border ${
-                    car.listingType === 'rent'
-                      ? 'bg-emerald-500/80 border-emerald-400 text-white'
-                      : 'bg-red-500/80 border-red-400 text-white'
-                  }`}>
-                    {car.listingType === 'rent' ? 'RENT' : 'SALE'}
-                  </div>
-                </div>
-                <div className={`p-4 ${resolvedTheme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
-                  <h3 className={`text-lg font-bold line-clamp-1 ${
-                    resolvedTheme === 'dark' ? 'text-white' : 'text-slate-900'
-                  }`}>
-                    {car.name}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
 
         {/* View All Cars Link */}
         <div className="text-center mt-12">

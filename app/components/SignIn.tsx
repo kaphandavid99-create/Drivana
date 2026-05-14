@@ -6,15 +6,19 @@ import { ArrowLeft } from "lucide-react";
 
 export default function SignInPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-sky-900 to-slate-900 px-4">
+
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-sky-900 to-slate-900 px-4 pt-24 sm:pt-28">
       <div className="w-full max-w-md">
         {/* Back to Home */}
-        <Link 
+        <Link
           href="/"
           className="inline-flex items-center gap-2 text-sky-400 hover:text-sky-300 transition-colors mb-8"
         >
-          <ArrowLeft className="h-4 w-4" />
-          Back to Home
+          {/* Back content can be added here */}
+          <span className="inline-flex items-center gap-2">
+            <ArrowLeft className="w-4 h-4" />
+            Back to Home
+          </span>
         </Link>
 
         {/* Sign In Card */}
@@ -51,16 +55,6 @@ export default function SignInPage() {
               }
             }}
           />
-        </div>
-
-        {/* Sign Up Link */}
-        <div className="text-center mt-6">
-          <p className="text-gray-400">
-            Don't have an account?{" "}
-            <Link href="/sign-up" className="text-sky-400 hover:text-sky-300 transition-colors font-medium">
-              Sign up
-            </Link>
-          </p>
         </div>
       </div>
     </div>

@@ -119,6 +119,7 @@ isScrolled ? 'rounded-l-full' : 'rounded-xl'
 src="/driva.png"
 alt="Car Rental Logo"
 fill
+sizes="160px"
 className="object-contain"
 priority
 />
@@ -309,6 +310,7 @@ isScrolled ? 'rounded-l-xl' : 'rounded-xl'
 src="/driva.png"
 alt="Car Rental Logo"
 fill
+sizes="160px"
 className="object-contain"
 priority
 />

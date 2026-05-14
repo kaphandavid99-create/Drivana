@@ -63,6 +63,8 @@ export default function Hero() {
   const [mode, setMode] = useState<"rent" | "buy">("rent");
   const [mounted, setMounted] = useState(false);
   const [selectedCarType, setSelectedCarType] = useState("");
+  const desktopVideoRef = useRef<HTMLVideoElement>(null);
+  const mobileVideoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
     // Defer mounted state update to avoid cascading renders
@@ -71,6 +73,17 @@ export default function Hero() {
     }, 0);
     return () => clearTimeout(timeoutId);
   }, []);
+
+  useEffect(() => {
+    const playVideo = (video: HTMLVideoElement | null) => {
+      if (!video) return;
+      video.play().catch(() => {
+        setTimeout(() => video.play().catch(() => {}), 500);
+      });
+    };
+    playVideo(desktopVideoRef.current);
+    playVideo(mobileVideoRef.current);
+  }, [mounted]);
 
 
   const handleVideoStalled = (ref: React.RefObject<HTMLVideoElement | null>) => {
@@ -90,13 +103,15 @@ export default function Hero() {
       {/* Video Background - Desktop Only */}
       <div className="absolute inset-0 z-0 w-full h-full hidden lg:block overflow-hidden">
         <video
+          ref={desktopVideoRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           onLoadedData={() => setIsVideoLoaded(true)}
           onCanPlay={() => setIsVideoLoaded(true)}
+          onStalled={() => handleVideoStalled(desktopVideoRef)}
           className="absolute inset-0 w-full h-full object-cover min-w-full min-h-full pointer-events-none"
           disablePictureInPicture
           disableRemotePlayback
@@ -108,12 +123,14 @@ export default function Hero() {
       {/* High Quality Video - Mobile */}
       <div className="absolute inset-0 z-0 w-full h-full lg:hidden overflow-hidden">
         <video
+          ref={mobileVideoRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="metadata"
+          preload="auto"
           onCanPlay={() => setIsVideoLoaded(true)}
+          onStalled={() => handleVideoStalled(mobileVideoRef)}
           className="absolute inset-0 w-full h-full object-cover"
           style={{ 
             filter: 'contrast(1.05) saturate(1.1)',

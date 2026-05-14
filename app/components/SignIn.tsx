@@ -35,7 +35,6 @@ export default function SignInPage() {
                   dividerLine: "bg-white/20",
                   dividerText: "text-gray-400",
                   footerActionLink: "text-sky-400 hover:text-sky-300",
-                  footerAction: "hidden",
                   identityPreview: "bg-white/10 border border-white/20 rounded-lg",
                   identityPreviewText: "text-white",
                   identityPreviewEditButton: "text-sky-400 hover:text-sky-300",

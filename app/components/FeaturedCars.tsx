@@ -86,7 +86,7 @@ export default function FeaturedCars() {
               } backdrop-blur-xl`}
             >
               {/* Image Container - Larger */}
-              <div className="relative h-40 bg-slate-800 overflow-hidden">
+              <div className="relative h-64 sm:h-52 lg:h-44 bg-slate-800 overflow-hidden">
                 <Image
                   src={car.image}
                   alt={car.name}
@@ -300,7 +300,7 @@ export default function FeaturedCars() {
                     : 'bg-white border-slate-200'
                 }`}
               >
-                <div className="relative h-40 bg-slate-800 overflow-hidden">
+                <div className="relative h-64 sm:h-52 lg:h-44 bg-slate-800 overflow-hidden">
                   <Image
                     src={car.image}
                     alt={car.name}

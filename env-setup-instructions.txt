@@ -1,0 +1,30 @@
+# ENVIRONMENT SETUP INSTRUCTIONS
+
+## Create .env.local file manually:
+
+1. Create a new file named ".env.local" in your project root (drivana/drivana/)
+2. Add the following content with your actual Clerk keys:
+
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_your_publishable_key_here
+NEXT_PUBLIC_CLERK_SECRET_KEY=sk_live_your_secret_key_here
+
+## Where to get your keys:
+
+1. Go to https://dashboard.clerk.com
+2. Select your project
+3. Go to "API Keys" section
+4. Copy the "Publishable key" and "Secret key"
+5. Replace the placeholder values above with your actual keys
+
+## Important:
+
+- Use pk_live_... for production
+- Use sk_live_... for production
+- Use pk_test_... for development
+- Use sk_test_... for development
+
+## After setup:
+
+1. Restart your development server
+2. The authentication system will be fully functional
+3. You can test sign in/sign up functionality

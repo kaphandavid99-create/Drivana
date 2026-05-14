@@ -42,7 +42,7 @@ export default function WhyChooseUsPage() {
             
             {/* Car Image */}
             <img
-              src="/cars/black_car.png"
+              src="/Cars/black_car.png"
               alt="Luxury Car"
               className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110 relative z-20"
             />

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Heart, Fuel, Users, Zap, ChevronDown, X, MapPin, Calendar, CarFront, Wallet, Search, Star, Shield, CheckCircle2 } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import { useWishlist } from "../contexts/WishlistContext";
 import { localCars } from "../../data/carData";
 
 // Toyota cars data
@@ -60,10 +61,10 @@ const allCars = [...toyotaCars, ...localCars];
 
 export default function CarsPage() {
   const { resolvedTheme } = useTheme();
+  const { isInWishlist, toggleWishlist } = useWishlist();
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [selectedFuel, setSelectedFuel] = useState("all");
-  const [wishlist, setWishlist] = useState<number[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
   const [mode, setMode] = useState<"rent" | "buy">("rent");
@@ -87,12 +88,6 @@ export default function CarsPage() {
     const matchesMode = mode === "rent" ? car.listingType === "rent" : car.listingType === "sell";
     return matchesType && matchesFuel && matchesSearch && matchesMode;
   });
-
-  const toggleWishlist = (id: number) => {
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((carId) => carId !== id) : [...prev, id]
-    );
-  };
 
   const handleSearch = () => {
     // Search is now always active, filters update in real-time
@@ -502,7 +497,7 @@ export default function CarsPage() {
                     <button
                       onClick={() => toggleWishlist(car.id)}
                       className={`p-2 rounded-full backdrop-blur-md border-2 transition-all hover:scale-110 ${
-                        wishlist.includes(car.id)
+                        isInWishlist(car.id)
                           ? 'bg-red-500/80 border-red-400 shadow-lg shadow-red-500/50'
                           : resolvedTheme === 'dark'
                             ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-800/80'
@@ -511,7 +506,7 @@ export default function CarsPage() {
                     >
                       <Heart
                         className={`w-4 h-4 ${
-                          wishlist.includes(car.id)
+                          isInWishlist(car.id)
                             ? 'fill-white text-white'
                             : resolvedTheme === 'dark'
                               ? 'text-slate-400'

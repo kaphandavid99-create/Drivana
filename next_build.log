@@ -1,0 +1,31 @@
+
+> drivana@0.1.0 build
+> next build
+
+⚠ Warning: Next.js inferred your workspace root, but it may not be correct.
+ We detected multiple lockfiles and selected the directory of C:\Users\GOLD COMPUTERS\OneDrive\Desktop\drivana\package-lock.json as the root directory.
+ To silence this warning, set `turbopack.root` in your Next.js config, or consider removing one of the lockfiles if it's not needed.
+   See https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopack#root-directory for more information.
+ Detected additional lockfiles: 
+   * C:\Users\GOLD COMPUTERS\OneDrive\Desktop\drivana\drivana\package-lock.json
+
+▲ Next.js 16.2.4 (Turbopack)
+- Environments: .env.local
+
+⚠ The "middleware" file convention is deprecated. Please use "proxy" instead. Learn more: https://nextjs.org/docs/messages/middleware-to-proxy
+  Creating an optimized production build ...
+✓ Compiled successfully in 39.2s
+  Running TypeScript ...
+Failed to type check.
+
+.next/dev/types/routes.d.ts:73:7
+Type error: Module declaration names may only use ' or " quoted strings.
+
+  [90m71 |[0m    * [33mProps[0m [36mfor[0m [33mNext[0m.js [33mApp[0m [33mRouter[0m layout components
+  [90m72 |[0m    * @example
+[31m[1m>[0m [90m73 |[0m    * [32m``[0m[32m`tsx[0m
+  [90m   |[0m       [31m[1m^[0m
+  [90m74 |[0m [32m   * export default function Layout(props: LayoutProps<'/dashboard'>) {[0m
+  [90m75 |[0m [32m   *   return <div>{props.children}</div>[0m
+  [90m76 |[0m [32m   * }[0m
+Next.js build worker exited with code: 1 and signal: null

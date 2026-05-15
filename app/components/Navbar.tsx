@@ -19,6 +19,7 @@ Newspaper,
 } from "lucide-react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useTheme } from "../contexts/ThemeContext";
+import { useWishlist } from "../contexts/WishlistContext";
 import ThemeToggle from "./ThemeToggle";
 const navLinks = [
 { name: "Home", href: "/", icon: Home },
@@ -37,6 +38,7 @@ const pathname = usePathname();
 const { isSignedIn, user } = useUser();
 const { signOut } = useClerk();
 const { resolvedTheme } = useTheme();
+const { wishlistCount } = useWishlist();
 // Close mobile menu on route change
 useEffect(() => {
   // Use setTimeout to defer state updates to avoid cascading renders
@@ -181,9 +183,9 @@ resolvedTheme === 'light'
 aria-label="Wishlist"
 >
 <Heart className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
-{/* Wishlist badge - can be dynamic */}
+{/* Wishlist badge - dynamic count */}
 <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">
-0
+{wishlistCount}
 </span>
 </Link>
 {/* Authentication Section */}
@@ -338,9 +340,9 @@ className="relative p-2 sm:p-2.5 rounded-full transition-all duration-200 group 
 aria-label="Wishlist"
 >
 <Heart className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
-{/* Wishlist badge - can be dynamic */}
+{/* Wishlist badge - dynamic count */}
 <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">
-0
+{wishlistCount}
 </span>
 </Link>
 {/* Mobile Menu Button */}

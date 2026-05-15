@@ -14,11 +14,8 @@ export default function SignInPage() {
           href="/"
           className="inline-flex items-center gap-2 text-sky-400 hover:text-sky-300 transition-colors mb-8"
         >
-          {/* Back content can be added here */}
-          <span className="inline-flex items-center gap-2">
-            <ArrowLeft className="w-4 h-4" />
-            Back to Home
-          </span>
+          <ArrowLeft className="w-4 h-4" />
+          Back to Home
         </Link>
 
         {/* Sign In Card */}

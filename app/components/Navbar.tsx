@@ -19,6 +19,7 @@ Newspaper,
 } from "lucide-react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useTheme } from "../contexts/ThemeContext";
+import { useWishlist } from "../contexts/WishlistContext";
 import ThemeToggle from "./ThemeToggle";
 const navLinks = [
 { name: "Home", href: "/", icon: Home },
@@ -37,6 +38,7 @@ const pathname = usePathname();
 const { isSignedIn, user } = useUser();
 const { signOut } = useClerk();
 const { resolvedTheme } = useTheme();
+const { wishlistCount } = useWishlist();
 // Close mobile menu on route change
 useEffect(() => {
   // Use setTimeout to defer state updates to avoid cascading renders
@@ -182,9 +184,9 @@ resolvedTheme === 'light'
 aria-label="Wishlist"
 >
 <Heart className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
-{/* Wishlist badge - can be dynamic */}
+{/* Wishlist badge - dynamic count */}
 <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">
-0
+{wishlistCount}
 </span>
 </Link>
 {/* Authentication Section */}
@@ -340,9 +342,9 @@ className="relative p-2 sm:p-2.5 rounded-full transition-all duration-200 group 
 aria-label="Wishlist"
 >
 <Heart className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
-{/* Wishlist badge - can be dynamic */}
+{/* Wishlist badge - dynamic count */}
 <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white">
-0
+{wishlistCount}
 </span>
 </Link>
 {/* Mobile Menu Button */}
@@ -461,6 +463,22 @@ className="flex items-center justify-between rounded-lg px-4 py-3 bg-white text-
 <ChevronRight className="h-4 w-4" />
 </Link>
 {isSignedIn ? (
+<div className="space-y-3">
+{/* User Profile Section */}
+<div className="flex items-center gap-3 rounded-lg px-4 py-3 bg-white text-black">
+<div className="w-10 h-10 rounded-full bg-sky-500 flex items-center justify-center text-white font-semibold text-base flex-shrink-0">
+{getUserInitials()}
+</div>
+<div>
+<p className="font-medium text-sm">
+{user?.firstName || user?.username || 'User'}
+</p>
+<p className="text-xs text-gray-500">
+Account Settings
+</p>
+</div>
+</div>
+{/* Profile Link */}
 <Link
 href="/profile"
 onClick={() => setIsMenuOpen(false)}
@@ -472,6 +490,29 @@ className="flex items-center justify-between rounded-lg px-4 py-3 bg-white text-
 </div>
 <ChevronRight className="h-4 w-4" />
 </Link>
+{/* My Bookings Link */}
+<Link
+href="/bookings"
+onClick={() => setIsMenuOpen(false)}
+className="flex items-center justify-between rounded-lg px-4 py-3 bg-white text-black transition-all duration-200 hover:bg-gray-100"
+>
+<div className="flex items-center gap-3">
+<Car className="h-5 w-5" />
+<span className="flex-1">My Bookings</span>
+</div>
+<ChevronRight className="h-4 w-4" />
+</Link>
+{/* Sign Out Button */}
+<button
+onClick={() => { signOut(); setIsMenuOpen(false); }}
+className="flex items-center justify-between rounded-lg px-4 py-3 bg-white text-red-500 transition-all duration-200 hover:bg-gray-100 w-full"
+>
+<div className="flex items-center gap-3">
+<LogOut className="h-5 w-5" />
+<span className="flex-1 text-left">Sign Out</span>
+</div>
+</button>
+</div>
 ) : (
 <div className="space-y-3">
 <Link

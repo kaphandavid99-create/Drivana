@@ -85,7 +85,7 @@ export default function Footer() {
                   </div>
                 </div>
                 <Image
-                  src="/Cars/drivana.png"
+                  src="/cars/Drivana.png"
                   alt="Drivana Logo"
                   fill
                   sizes="288px"

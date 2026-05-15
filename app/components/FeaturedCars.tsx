@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Heart, Users, Fuel, Gauge, ChevronRight, Check, Key, ClipboardCheck, Star } from "lucide-react";
+import { Heart, Users, Fuel, Gauge, ChevronRight, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
+import { useWishlist } from "../contexts/WishlistContext";
 import { localCars } from "../../data/carData";
 
 // Use only local cars with images from public folder
@@ -13,18 +14,7 @@ const featuredCars = localCars.slice(0, 4);
 
 export default function FeaturedCars() {
   const { resolvedTheme } = useTheme();
-  const [wishlist, setWishlist] = useState<number[]>([]);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const toggleWishlist = (id: number) => {
-    setWishlist((prev) =>
-      prev.includes(id) ? prev.filter((carId) => carId !== id) : [...prev, id]
-    );
-  };
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
   const formatPrice = (price: number) => {
     if (price > 100000) {
@@ -49,7 +39,6 @@ export default function FeaturedCars() {
         </div>
 
         {/* Car Grid - Enhanced Design with Larger Images */}
-        {mounted ? (
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           initial="hidden"
@@ -85,14 +74,18 @@ export default function FeaturedCars() {
                   : 'bg-white border-slate-200 hover:border-sky-400/60 hover:shadow-2xl hover:shadow-sky-500/20'
               } backdrop-blur-xl`}
             >
-              {/* Image Container - Larger */}
-              <div className="relative h-40 bg-slate-800 overflow-hidden">
+              <Link
+                href={`/cars/${car.id}`}
+                aria-label={`View details for ${car.name}`}
+                className="absolute inset-0 z-0"
+              />
+              {/* Image Container - More Visible */}
+              <div className="relative z-10 h-64 bg-slate-800 overflow-hidden">
                 <Image
                   src={car.image}
                   alt={car.name}
                   fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="object-cover group-hover:scale-110 transition-transform duration-700 brightness-110 contrast-105 saturate-110"
                   priority
                 />
                 {/* Overlay Gradient */}
@@ -103,7 +96,7 @@ export default function FeaturedCars() {
                 }`} />
 
                 {/* Badges Container */}
-                <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start">
+                <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start relative z-10">
                   {/* Type & Year Badges */}
                   <div className="flex gap-2">
                     <span className={`px-4 py-2 rounded-full text-xs font-bold backdrop-blur-md border ${
@@ -126,7 +119,7 @@ export default function FeaturedCars() {
                   <button
                     onClick={() => toggleWishlist(car.id)}
                     className={`p-3 rounded-full backdrop-blur-md border-2 transition-all hover:scale-110 ${
-                      wishlist.includes(car.id)
+                      isInWishlist(car.id)
                         ? 'bg-red-500/80 border-red-400 shadow-lg shadow-red-500/50'
                         : resolvedTheme === 'dark'
                           ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-800/80'
@@ -135,7 +128,7 @@ export default function FeaturedCars() {
                   >
                     <Heart
                       className={`w-5 h-5 ${
-                        wishlist.includes(car.id)
+                        isInWishlist(car.id)
                           ? 'fill-white text-white'
                           : resolvedTheme === 'dark'
                             ? 'text-slate-400'
@@ -147,7 +140,7 @@ export default function FeaturedCars() {
               </div>
 
               {/* Content Section */}
-              <div className={`p-4 flex flex-col flex-grow ${
+              <div className={`relative z-10 p-4 flex flex-col flex-grow ${
                 resolvedTheme === 'dark' ? 'bg-slate-900' : 'bg-white'
               }`}>
                 {/* Title & Rating */}
@@ -275,60 +268,24 @@ export default function FeaturedCars() {
                   </div>
                 </div>
 
-                {/* CTA Button */}
-                <Link href={`/cars/${car.id}`} className="mt-auto">
-                  <button className={`w-full py-3 rounded-xl font-bold text-sm transition-all border-2 tracking-wide ${
-                    resolvedTheme === 'dark'
-                      ? 'bg-red-700 hover:bg-red-600 border-red-600 hover:border-red-500 text-white shadow-lg shadow-red-900/40 hover:shadow-red-900/60'
-                      : 'bg-red-500 hover:bg-red-600 border-red-400 hover:border-red-500 text-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50'
-                  }`}>
+                {/* CTA Button (kept as visual only; whole card is clickable) */}
+                <div className="mt-auto">
+                  <button
+                    type="button"
+                    onClick={(e) => e.stopPropagation()}
+                    className={`w-full py-3 rounded-xl font-bold text-sm transition-all border-2 tracking-wide ${
+                      resolvedTheme === 'dark'
+                        ? 'bg-red-700 hover:bg-red-600 border-red-600 hover:border-red-500 text-white shadow-lg shadow-red-900/40 hover:shadow-red-900/60'
+                        : 'bg-red-500 hover:bg-red-600 border-red-400 hover:border-red-500 text-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50'
+                    }`}
+                  >
                     {car.listingType === 'rent' ? 'Rent Now' : 'Buy Now'}
                   </button>
-                </Link>
+                </div>
               </div>
             </motion.div>
           ))}
         </motion.div>
-        ) : (
-          // Static fallback for SSR
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredCars.map((car) => (
-              <div
-                key={car.id}
-                className={`group relative flex flex-col rounded-3xl overflow-hidden border-2 h-full ${
-                  resolvedTheme === 'dark'
-                    ? 'bg-slate-900/80 border-slate-800'
-                    : 'bg-white border-slate-200'
-                }`}
-              >
-                <div className="relative h-40 bg-slate-800 overflow-hidden">
-                  <Image
-                    src={car.image}
-                    alt={car.name}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover"
-                    priority
-                  />
-                  <div className={`absolute top-3 left-3 px-4 py-2 rounded-full text-xs font-bold backdrop-blur-md border ${
-                    car.listingType === 'rent'
-                      ? 'bg-emerald-500/80 border-emerald-400 text-white'
-                      : 'bg-red-500/80 border-red-400 text-white'
-                  }`}>
-                    {car.listingType === 'rent' ? 'RENT' : 'SALE'}
-                  </div>
-                </div>
-                <div className={`p-4 ${resolvedTheme === 'dark' ? 'bg-slate-900' : 'bg-white'}`}>
-                  <h3 className={`text-lg font-bold line-clamp-1 ${
-                    resolvedTheme === 'dark' ? 'text-white' : 'text-slate-900'
-                  }`}>
-                    {car.name}
-                  </h3>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
 
         {/* View All Cars Link */}
         <div className="text-center mt-12">

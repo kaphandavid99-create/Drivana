@@ -1,98 +1,95 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 
-interface WishlistContextType {
-  wishlist: number[];
-  addToWishlist: (id: number) => void;
-  removeFromWishlist: (id: number) => void;
-  toggleWishlist: (id: number) => void;
-  isInWishlist: (id: number) => boolean;
-  wishlistCount: number;
+type WishlistContextValue = {
+  wishlistIds: number[];
+  toggleWishlist: (carId: number) => void;
+  isWishlisted: (carId: number) => boolean;
+  clearWishlist: () => void;
+};
+
+const WishlistContext = createContext<WishlistContextValue | undefined>(undefined);
+
+const STORAGE_KEY = "drivana:wishlist";
+
+function safeParseWishlist(raw: string | null): number[] {
+  if (!raw) return [];
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+
+    const ids: number[] = [];
+    for (const item of parsed) {
+      // Accept numeric strings too, but store as real numbers.
+      const normalized = typeof item === "number" ? item : Number(item);
+      if (Number.isFinite(normalized)) ids.push(normalized);
+    }
+
+    // de-dupe
+    return Array.from(new Set(ids));
+  } catch {
+    return [];
+  }
 }
 
-const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
-
-export function useWishlist() {
-  const context = useContext(WishlistContext);
-  if (context === undefined) {
-    throw new Error("useWishlist must be used within a WishlistProvider");
-  }
-  return context;
+function normalizeCarId(carId: number): number | null {
+  const normalized = Number(carId);
+  return Number.isFinite(normalized) ? normalized : null;
 }
 
 export function WishlistProvider({ children }: { children: React.ReactNode }) {
-  const [wishlist, setWishlist] = useState<number[]>([]);
-  const [isClient, setIsClient] = useState(false);
+  // Start from the same value on server + first client render to avoid hydration mismatches.
+  const [wishlistIds, setWishlistIds] = useState<number[]>([]);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    // Only run on client side
-    if (typeof window === "undefined") return;
-    
-    // Initialize wishlist from localStorage
-    const saved = localStorage.getItem("wishlist");
-    if (saved) {
-      try {
-        setWishlist(JSON.parse(saved));
-      } catch (e) {
-        console.error("Failed to parse wishlist from localStorage", e);
-        setWishlist([]);
-      }
-    }
-    
-    setIsClient(true);
+    // Load from localStorage only after hydration.
+    const raw = window.localStorage.getItem(STORAGE_KEY);
+    requestAnimationFrame(() => {
+      setWishlistIds(safeParseWishlist(raw));
+      setIsMounted(true);
+    });
   }, []);
 
-  const addToWishlist = (id: number) => {
-    setWishlist((prev) => {
-      const newWishlist = [...prev, id];
-      if (typeof window !== "undefined") {
-        localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-      }
-      return newWishlist;
-    });
+  useEffect(() => {
+    // Don't write back until after we've loaded the initial state.
+    if (!isMounted) return;
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(wishlistIds));
+  }, [wishlistIds, isMounted]);
+
+  const toggleWishlist = (carId: number) => {
+    const normalizedId = normalizeCarId(carId);
+    if (normalizedId === null) return;
+
+    setWishlistIds((prev) =>
+      prev.includes(normalizedId)
+        ? prev.filter((id) => id !== normalizedId)
+        : [...prev, normalizedId]
+    );
   };
 
-  const removeFromWishlist = (id: number) => {
-    setWishlist((prev) => {
-      const newWishlist = prev.filter((carId) => carId !== id);
-      if (typeof window !== "undefined") {
-        localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-      }
-      return newWishlist;
-    });
-  };
+  const clearWishlist = () => setWishlistIds([]);
 
-  const toggleWishlist = (id: number) => {
-    setWishlist((prev) => {
-      const newWishlist = prev.includes(id) 
-        ? prev.filter((carId) => carId !== id)
-        : [...prev, id];
-      if (typeof window !== "undefined") {
-        localStorage.setItem("wishlist", JSON.stringify(newWishlist));
-      }
-      return newWishlist;
-    });
-  };
-
-  const isInWishlist = (id: number) => {
-    return wishlist.includes(id);
-  };
-
-  const wishlistCount = wishlist.length;
-
-  return (
-    <WishlistContext.Provider 
-      value={{ 
-        wishlist, 
-        addToWishlist, 
-        removeFromWishlist, 
-        toggleWishlist, 
-        isInWishlist,
-        wishlistCount 
-      }}
-    >
-      {children}
-    </WishlistContext.Provider>
+  const value = useMemo<WishlistContextValue>(
+    () => ({
+      wishlistIds,
+      toggleWishlist,
+      isWishlisted: (carId: number) => {
+        const normalizedId = normalizeCarId(carId);
+        if (normalizedId === null) return false;
+        return wishlistIds.includes(normalizedId);
+      },
+      clearWishlist,
+    }),
+    [wishlistIds]
   );
+
+  return <WishlistContext.Provider value={value}>{children}</WishlistContext.Provider>;
+}
+
+export function useWishlist() {
+  const ctx = useContext(WishlistContext);
+  if (!ctx) throw new Error("useWishlist must be used within a WishlistProvider");
+  return ctx;
 }

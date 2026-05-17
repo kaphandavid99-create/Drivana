@@ -124,7 +124,8 @@ export default function Footer() {
                   src="/cars/Drivana.png"
                   alt="Drivana Logo"
                   fill
-                  className="object-contain"
+                  sizes="288px"
+                  className="object-contain object-left relative z-10"
                   priority
                 />
               </div>

@@ -728,7 +728,7 @@ export default function CarsPage() {
                 {/* Main Image */}
                 <div className="relative rounded-3xl overflow-hidden border-2 border-white/20 aspect-video mb-6">
                   <Image
-                    src={selectedCar.image}
+                    src={selectedCar.images.exterior}
                     alt={selectedCar.name}
                     fill
                     className="object-cover"

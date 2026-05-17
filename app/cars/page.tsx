@@ -423,7 +423,7 @@ export default function CarsPage() {
                 {/* Image Container - Large */}
                 <div className="relative h-48 bg-slate-800 overflow-hidden">
                   <Image
-                    src={'images' in car ? car.images.exterior : car.image}
+                    src={car.images.exterior}
                     alt={car.name}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

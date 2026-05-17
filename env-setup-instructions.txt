@@ -3,12 +3,15 @@
 ## Create .env.local file manually:
 
 1. Create a new file named ".env.local" in your project root (drivana/drivana/)
-2. Add the following content with your actual Clerk keys:
+2. Add the following content with your actual Clerk and EmailJS keys:
 
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_live_your_publishable_key_here
 NEXT_PUBLIC_CLERK_SECRET_KEY=sk_live_your_secret_key_here
+NEXT_PUBLIC_EMAILJS_PUBLIC_KEY=your_emailjs_public_key_here
+NEXT_PUBLIC_EMAILJS_SERVICE_ID=your_emailjs_service_id_here
+NEXT_PUBLIC_EMAILJS_TEMPLATE_ID=your_emailjs_template_id_here
 
-## Where to get your keys:
+## Where to get your Clerk keys:
 
 1. Go to https://dashboard.clerk.com
 2. Select your project
@@ -16,15 +19,45 @@ NEXT_PUBLIC_CLERK_SECRET_KEY=sk_live_your_secret_key_here
 4. Copy the "Publishable key" and "Secret key"
 5. Replace the placeholder values above with your actual keys
 
+## Where to get your EmailJS keys:
+
+1. Go to https://www.emailjs.com
+2. Sign up or log in to your account
+3. Create a new Email Service (e.g., Gmail, SMTP, etc.)
+4. Create an Email Template with the following variables:
+   - {{from_name}} - sender's name
+   - {{from_email}} - sender's email
+   - {{phone}} - sender's phone number
+   - {{message}} - message content
+   - {{to_name}} - recipient name (Drivana Team)
+   - {{to_email}} - recipient email (kaphandavid99@gmail.com)
+5. Go to "Account" > "General" to get your Public Key
+6. Go to "Email Services" to get your Service ID
+7. Go to "Email Templates" to get your Template ID
+8. Replace the placeholder values above with your actual keys
+
 ## Important:
 
-- Use pk_live_... for production
-- Use sk_live_... for production
-- Use pk_test_... for development
-- Use sk_test_... for development
+- Use pk_live_... for production (Clerk)
+- Use sk_live_... for production (Clerk)
+- Use pk_test_... for development (Clerk)
+- Use sk_test_... for development (Clerk)
+
+## For Vercel Deployment:
+
+1. Go to your Vercel project dashboard
+2. Navigate to "Settings" > "Environment Variables"
+3. Add the following environment variables:
+   - NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+   - NEXT_PUBLIC_CLERK_SECRET_KEY
+   - NEXT_PUBLIC_EMAILJS_PUBLIC_KEY
+   - NEXT_PUBLIC_EMAILJS_SERVICE_ID
+   - NEXT_PUBLIC_EMAILJS_TEMPLATE_ID
+4. Redeploy your project after adding the variables
 
 ## After setup:
 
 1. Restart your development server
 2. The authentication system will be fully functional
-3. You can test sign in/sign up functionality
+3. The contact form will be able to send emails
+4. You can test sign in/sign up functionality

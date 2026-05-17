@@ -2,53 +2,87 @@
 
 import { SignIn } from "@clerk/nextjs";
 import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+import { useTheme } from "../contexts/ThemeContext";
+import { useEffect, useState } from "react";
+import ThemeToggle from "./ThemeToggle";
 
 export default function SignInPage() {
+  const { resolvedTheme } = useTheme();
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; size: number; speed: number }>>([]);
+
+  useEffect(() => {
+    // Generate skyblue particles
+    const newParticles = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 2,
+      speed: Math.random() * 0.5 + 0.2
+    }));
+    setParticles(newParticles);
+  }, []);
+
   return (
+    <div className={`min-h-screen relative overflow-hidden ${
+      resolvedTheme === "dark" ? "bg-slate-900" : "bg-slate-100"
+    }`}>
+      {/* Skyblue Particles */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute rounded-full bg-sky-400/30 animate-pulse"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              animationDuration: `${particle.speed * 3}s`,
+            }}
+          />
+        ))}
+      </div>
 
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-sky-900 to-slate-900 px-4 pt-24 sm:pt-28">
-      <div className="w-full max-w-md">
-        {/* Back to Home */}
-        <Link
-          href="/"
-          className="inline-flex items-center gap-2 text-sky-400 hover:text-sky-300 transition-colors mb-8"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </Link>
+      {/* Theme Toggle */}
+      <div className="relative z-10 absolute top-6 right-6">
+        <ThemeToggle />
+      </div>
 
-        {/* Sign In Card */}
-        <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-            <p className="text-gray-300">Sign in to your Drivana account</p>
-          </div>
-
-          {/* Clerk SignIn Component */}
-          <SignIn 
+      {/* Sign In Form */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center px-4 pt-20">
+        <div className="w-full max-w-md">
+          <SignIn
             path="/sign-in"
             routing="path"
             signUpUrl="/sign-up"
             forceRedirectUrl="/"
             appearance={{
               elements: {
-                rootBox: "mx-auto",
-                card: "bg-transparent shadow-none border-0",
-                formButtonPrimary: 
-                  "bg-sky-500 hover:bg-sky-600 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200",
-                formFieldInput: 
-                  "bg-white/10 border border-white/20 text-white placeholder-gray-400 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent",
-                headerTitle: "hidden",
-                headerSubtitle: "hidden",
-                socialButtonsBlockButton: 
-                  "bg-white/10 border border-white/20 text-white hover:bg-white/20 rounded-lg transition-all duration-200",
-                dividerLine: "bg-white/20",
-                dividerText: "text-gray-400",
+                rootBox: "mx-auto py-2",
+                card: `py-4 backdrop-blur-md border ${
+                  resolvedTheme === "dark"
+                    ? "bg-slate-800/80 border-slate-700"
+                    : "bg-white/80 border-slate-300"
+                }`,
+                formField: "mb-3",
+                formButtonPrimary: "py-2",
+                footer: "mt-4",
+                formFieldInput: `${
+                  resolvedTheme === "dark"
+                    ? "bg-slate-700/50 border-slate-600 text-white placeholder-slate-400"
+                    : "bg-slate-100 border-slate-300 text-slate-900 placeholder-slate-500"
+                }`,
+                headerTitle: resolvedTheme === "dark" ? "text-white" : "text-slate-900",
+                headerSubtitle: resolvedTheme === "dark" ? "text-slate-400" : "text-slate-600",
+                socialButtonsBlockButton: `${
+                  resolvedTheme === "dark"
+                    ? "bg-slate-700/50 border-slate-600 text-white hover:bg-slate-600/50"
+                    : "bg-slate-100 border-slate-300 text-slate-900 hover:bg-slate-200"
+                }`,
+                dividerLine: resolvedTheme === "dark" ? "bg-slate-600" : "bg-slate-300",
+                dividerText: resolvedTheme === "dark" ? "text-slate-400" : "text-slate-600",
                 footerActionLink: "text-sky-400 hover:text-sky-300",
-                identityPreview: "bg-white/10 border border-white/20 rounded-lg",
-                identityPreviewText: "text-white",
-                identityPreviewEditButton: "text-sky-400 hover:text-sky-300",
+                formFieldLabel: resolvedTheme === "dark" ? "text-white" : "text-slate-900",
               }
             }}
           />

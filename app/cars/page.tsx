@@ -2,66 +2,18 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Heart, Fuel, Users, Zap, ChevronDown, X, MapPin, Calendar, CarFront, Wallet, Search, Star, Shield, CheckCircle2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, Fuel, Users, Zap, ChevronDown, X, MapPin, Calendar, CarFront, Wallet, Search, Star, Shield, CheckCircle2, Maximize2, Phone, Mail, Info, Award, TrendingUp, Check, Clock, RotateCw, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useWishlist } from "../contexts/WishlistContext";
-import { localCars } from "../../data/carData";
+import { localCars, rentCars } from "../../data/carData";
 
-// Toyota cars data
-const toyotaCars = [
-  {
-    id: 1,
-    name: "Toyota Camry",
-    type: "Sedan",
-    year: 2024,
-    price: 51000,
-    listingType: "rent",
-    image: "https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?w=800&q=80",
-    seats: 5,
-    fuel: "Hybrid",
-    transmission: "Automatic",
-    features: ["Bluetooth", "Backup Camera", "Cruise Control", "Lane Assist", "Leather Seats"],
-    rating: 4.7,
-    reviews: 156,
-  },
-  {
-    id: 2,
-    name: "Toyota RAV4",
-    type: "SUV",
-    year: 2024,
-    price: 32500000,
-    listingType: "sell",
-    image: "https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=800&q=80",
-    seats: 5,
-    fuel: "Hybrid",
-    transmission: "Automatic",
-    features: ["AWD", "Apple CarPlay", "Sunroof", "Navigation", "Safety Suite"],
-    rating: 4.8,
-    reviews: 234,
-  },
-  {
-    id: 3,
-    name: "Toyota Corolla",
-    type: "Sedan",
-    year: 2024,
-    price: 39000,
-    listingType: "rent",
-    image: "https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800&q=80",
-    seats: 5,
-    fuel: "Gasoline",
-    transmission: "Automatic",
-    features: ["Lane Assist", "USB Ports", "Keyless Entry", "Bluetooth", "Backup Camera"],
-    rating: 4.5,
-    reviews: 189,
-  },
-];
-
-const allCars = [...toyotaCars, ...localCars];
+// Use rentCars for rent mode, localCars for buy mode
+const allCars = [...localCars, ...rentCars];
 
 export default function CarsPage() {
   const { resolvedTheme } = useTheme();
-  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isWishlisted, toggleWishlist } = useWishlist();
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [selectedFuel, setSelectedFuel] = useState("all");
@@ -73,6 +25,8 @@ export default function CarsPage() {
   const [pickupDate, setPickupDate] = useState("");
   const [returnDate, setReturnDate] = useState("");
   const [visibleCars, setVisibleCars] = useState(12);
+  const [selectedCar, setSelectedCar] = useState<typeof allCars[0] | null>(null);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
 
   useEffect(() => {
     setMounted(true);
@@ -97,11 +51,20 @@ export default function CarsPage() {
     if (price > 100000) {
       return `${(price / 1000000).toFixed(1)}M FCFA`;
     }
-    return `${price.toLocaleString()} FCFA`;
+    return `${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} FCFA`;
+  };
+
+  const handleCardClick = (car: typeof allCars[0]) => {
+    setSelectedCar(car);
+    setActiveImageIndex(0);
+  };
+
+  const closeModal = () => {
+    setSelectedCar(null);
   };
 
   return (
-    <div className={`min-h-screen py-20 px-4 sm:px-6 lg:px-8 ${
+    <div className={`min-h-screen pt-32 pb-20 px-4 sm:px-6 lg:px-8 ${
       resolvedTheme === 'dark' 
         ? 'bg-slate-950' 
         : 'bg-slate-50'
@@ -237,10 +200,10 @@ export default function CarsPage() {
                         <select
                           value={selectedType}
                           onChange={(e) => setSelectedType(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer text-white ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20'
                           }`}
                           style={{ backgroundColor: 'transparent' }}
                         >
@@ -361,19 +324,19 @@ export default function CarsPage() {
                         <select
                           value={priceRange}
                           onChange={(e) => setPriceRange(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer text-white ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20'
                           }`}
                           style={{ backgroundColor: 'transparent' }}
                         >
-                          <option value="">Any Price</option>
-                          <option value="0-10000000">Under 10M FCFA</option>
-                          <option value="10000000-30000000">10M - 30M FCFA</option>
-                          <option value="30000000-60000000">30M - 60M FCFA</option>
-                          <option value="60000000-100000000">60M - 100M FCFA</option>
-                          <option value="100000000+">100M+ FCFA</option>
+                          <option value="" style={{ color: 'white' }}>Any Price</option>
+                          <option value="0-10000000" style={{ color: 'white' }}>Under 10M FCFA</option>
+                          <option value="10000000-30000000" style={{ color: 'white' }}>10M - 30M FCFA</option>
+                          <option value="30000000-60000000" style={{ color: 'white' }}>30M - 60M FCFA</option>
+                          <option value="60000000-100000000" style={{ color: 'white' }}>60M - 100M FCFA</option>
+                          <option value="100000000+" style={{ color: 'white' }}>100M+ FCFA</option>
                         </select>
                       </div>
                     </div>
@@ -392,10 +355,10 @@ export default function CarsPage() {
                         <select
                           value={selectedType}
                           onChange={(e) => setSelectedType(e.target.value)}
-                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer ${
+                          className={`w-full pl-10 pr-4 py-3 rounded-xl border-2 border-sky-300 transition-all focus:outline-none focus:ring-2 appearance-none cursor-pointer text-white ${
                             resolvedTheme === 'dark'
-                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20 text-white'
-                              : 'bg-white focus:border-red-500 focus:ring-red-500/20 text-slate-900'
+                              ? 'bg-slate-800/50 focus:border-red-500 focus:ring-red-500/20'
+                              : 'bg-white focus:border-red-500 focus:ring-red-500/20'
                           }`}
                           style={{ backgroundColor: 'transparent' }}
                         >
@@ -420,7 +383,7 @@ export default function CarsPage() {
                     }`}
                   >
                     <Search className="h-5 w-5 group-hover:scale-110 transition-transform" />
-                    Find Cars for Sale
+                    {visibleCars === filteredCars.length ? 'Show All Cars' : `Load More Cars (${filteredCars.length - visibleCars} remaining)`}
                   </button>
                 </div>
               )}
@@ -460,7 +423,7 @@ export default function CarsPage() {
                 {/* Image Container - Large */}
                 <div className="relative h-48 bg-slate-800 overflow-hidden">
                   <Image
-                    src={car.image}
+                    src={'images' in car ? car.images.exterior : car.image}
                     alt={car.name}
                     fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -497,7 +460,7 @@ export default function CarsPage() {
                     <button
                       onClick={() => toggleWishlist(car.id)}
                       className={`p-2 rounded-full backdrop-blur-md border-2 transition-all hover:scale-110 ${
-                        isInWishlist(car.id)
+                        isWishlisted(car.id)
                           ? 'bg-red-500/80 border-red-400 shadow-lg shadow-red-500/50'
                           : resolvedTheme === 'dark'
                             ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-800/80'
@@ -506,7 +469,7 @@ export default function CarsPage() {
                     >
                       <Heart
                         className={`w-4 h-4 ${
-                          isInWishlist(car.id)
+                          isWishlisted(car.id)
                             ? 'fill-white text-white'
                             : resolvedTheme === 'dark'
                               ? 'text-slate-400'
@@ -561,10 +524,15 @@ export default function CarsPage() {
                   <div className={`mb-3 pb-3 border-b ${
                     resolvedTheme === 'dark' ? 'border-slate-800' : 'border-slate-200'
                   }`}>
+                    <p className={`text-[10px] line-through ${
+                      resolvedTheme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                    }`}>
+                      {formatPrice((car as any).strikingPrice || car.price)}
+                    </p>
                     <p className={`text-lg font-bold ${
                       resolvedTheme === 'dark' ? 'text-red-400' : 'text-red-600'
                     }`}>
-                      {formatPrice(car.price)}
+                      {formatPrice((car as any).realPrice || car.price)}
                     </p>
                     <p className={`text-[10px] ${
                       resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-600'
@@ -652,13 +620,15 @@ export default function CarsPage() {
                   </div>
 
                   {/* CTA Button */}
-                  <Link href={`/cars/${car.id}`} className="mt-auto">
-                    <button className={`w-full py-2 rounded-xl font-bold text-xs transition-all border-2 tracking-wide ${
-                      resolvedTheme === 'dark'
-                        ? 'bg-red-700 hover:bg-red-600 border-red-600 hover:border-red-500 text-white shadow-lg shadow-red-900/40 hover:shadow-red-900/60'
-                        : 'bg-red-500 hover:bg-red-600 border-red-400 hover:border-red-500 text-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50'
-                    }`}>
-                      {car.listingType === 'rent' ? 'Rent Now' : 'Buy Now'}
+                  <Link href={`/cars/${car.id}`} className="mt-auto block">
+                    <button 
+                      className={`w-full py-2 rounded-xl font-bold text-xs transition-all border-2 tracking-wide ${
+                        resolvedTheme === 'dark'
+                          ? 'bg-red-700 hover:bg-red-600 border-red-600 hover:border-red-500 text-white shadow-lg shadow-red-900/40 hover:shadow-red-900/60'
+                          : 'bg-red-500 hover:bg-red-600 border-red-400 hover:border-red-500 text-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50'
+                      }`}
+                    >
+                      View Details
                     </button>
                   </Link>
                 </div>
@@ -724,6 +694,257 @@ export default function CarsPage() {
           </motion.div>
         )}
       </div>
+
+      {/* Car Detail Modal */}
+      <AnimatePresence>
+        {selectedCar && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/90 overflow-y-auto"
+            onClick={closeModal}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ type: "spring", damping: 25 }}
+              className="min-h-screen p-4 sm:p-6 lg:p-8"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Close Button */}
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={closeModal}
+                className="fixed top-6 right-6 z-10 p-3 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border-2 border-white/30 transition-all"
+              >
+                <X className="text-white" size={24} />
+              </motion.button>
+
+              <div className="max-w-7xl mx-auto">
+                {/* Main Image */}
+                <div className="relative rounded-3xl overflow-hidden border-2 border-white/20 aspect-video mb-6">
+                  <Image
+                    src={selectedCar.image}
+                    alt={selectedCar.name}
+                    fill
+                    className="object-cover"
+                    priority
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                  
+                  {/* Badges */}
+                  <div className="absolute top-4 left-4 flex gap-2">
+                    <span className={`px-4 py-2 rounded-full text-xs font-extrabold border-2 backdrop-blur-md ${
+                      selectedCar.listingType === 'rent'
+                        ? 'bg-emerald-500/80 border-emerald-400 text-white'
+                        : 'bg-red-500/80 border-red-400 text-white'
+                    }`}>
+                      {selectedCar.listingType === 'rent' ? 'FOR RENT' : 'FOR SALE'}
+                    </span>
+                    <span className="px-4 py-2 rounded-full text-xs font-extrabold border-2 backdrop-blur-md bg-white/10 border-white/30 text-white">
+                      {selectedCar.year}
+                    </span>
+                  </div>
+
+                  {/* Rating */}
+                  {selectedCar.rating && (
+                    <div className="absolute bottom-4 right-4 flex items-center gap-2 rounded-2xl border-2 px-4 py-3 backdrop-blur-md bg-white/10 border-white/30">
+                      <Star className="text-amber-500" fill="currentColor" size={20} />
+                      <div className="text-white font-black">
+                        {selectedCar.rating}{' '}
+                        <span className="text-white/70 font-bold text-sm">
+                          ({selectedCar.reviews} reviews)
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Content Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left Column - Details */}
+                  <div className="lg:col-span-2 space-y-6">
+                    {/* Car Name */}
+                    <div>
+                      <h1 className="text-4xl font-black text-white mb-2">
+                        {selectedCar.name}
+                      </h1>
+                      <p className="text-white/70 font-bold">
+                        {selectedCar.year} • {selectedCar.type}
+                      </p>
+                    </div>
+
+                    {/* Quick Specs */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="flex flex-col items-center p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                        <Users className="text-red-400" size={28} />
+                        <div className="mt-2 text-2xl font-black text-white">{selectedCar.seats}</div>
+                        <div className="text-xs font-bold text-white/60">Seats</div>
+                      </div>
+                      <div className="flex flex-col items-center p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                        <Fuel className="text-red-400" size={28} />
+                        <div className="mt-2 text-2xl font-black text-white">{selectedCar.fuel}</div>
+                        <div className="text-xs font-bold text-white/60">Fuel Type</div>
+                      </div>
+                      <div className="flex flex-col items-center p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                        <Zap className="text-red-400" size={28} />
+                        <div className="mt-2 text-2xl font-black text-white">{selectedCar.transmission === 'Automatic' ? 'Auto' : 'Manual'}</div>
+                        <div className="text-xs font-bold text-white/60">Transmission</div>
+                      </div>
+                      <div className="flex flex-col items-center p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                        <CarFront className="text-red-400" size={28} />
+                        <div className="mt-2 text-2xl font-black text-white">{selectedCar.type}</div>
+                        <div className="text-xs font-bold text-white/60">Body Type</div>
+                      </div>
+                    </div>
+
+                    {/* Performance Specs */}
+                    <div className="rounded-2xl border-2 p-5 bg-white/5 border-white/10">
+                      <h3 className="text-lg font-black mb-4 text-white flex items-center gap-2">
+                        <Info size={20} className="text-red-400" />
+                        Performance & Dimensions
+                      </h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div>
+                          <div className="text-xs font-bold mb-1 text-white/60">Engine</div>
+                          <div className="font-black text-white">{selectedCar.fuel === 'Electric' ? 'Electric Motor' : '2.5L V6'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold mb-1 text-white/60">Horsepower</div>
+                          <div className="font-black text-white">{selectedCar.type === 'Sports' ? '450 HP' : '200 HP'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold mb-1 text-white/60">Acceleration</div>
+                          <div className="font-black text-white">{selectedCar.type === 'Sports' ? '3.5s' : '8.2s'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold mb-1 text-white/60">Top Speed</div>
+                          <div className="font-black text-white">{selectedCar.type === 'Sports' ? '280 km/h' : '180 km/h'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold mb-1 text-white/60">Length</div>
+                          <div className="font-black text-white">{selectedCar.type === 'SUV' ? '4.8m' : '4.5m'}</div>
+                        </div>
+                        <div>
+                          <div className="text-xs font-bold mb-1 text-white/60">Weight</div>
+                          <div className="font-black text-white">{selectedCar.type === 'SUV' ? '2,100 kg' : '1,600 kg'}</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Features */}
+                    <div>
+                      <h3 className="text-lg font-black mb-4 text-white">Premium Features</h3>
+                      <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                        {selectedCar.features.map((feature, idx) => (
+                          <div key={idx} className="flex items-center gap-2 px-4 py-3 rounded-xl border-2 text-sm font-bold bg-white/5 border-white/10 text-white">
+                            <Check className="text-red-400" size={16} />
+                            {feature}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Why You'll Love It */}
+                    <div className="rounded-2xl border-2 p-6 bg-white/5 border-white/10">
+                      <h3 className="text-xl font-black mb-4 text-white flex items-center gap-2">
+                        <Award size={24} className="text-red-400" />
+                        Why You'll Love This Vehicle
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex items-start gap-4 p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                          <div className="p-3 rounded-xl bg-red-900/30">
+                            <Shield className="text-red-400" size={24} />
+                          </div>
+                          <div>
+                            <div className="font-black mb-1 text-white">Safety First</div>
+                            <div className="text-sm font-bold text-white/60">Advanced safety features for peace of mind</div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4 p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                          <div className="p-3 rounded-xl bg-red-900/30">
+                            <TrendingUp className="text-red-400" size={24} />
+                          </div>
+                          <div>
+                            <div className="font-black mb-1 text-white">Great Value</div>
+                            <div className="text-sm font-bold text-white/60">Competitive pricing with premium features</div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4 p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                          <div className="p-3 rounded-xl bg-red-900/30">
+                            <Star className="text-red-400" size={24} />
+                          </div>
+                          <div>
+                            <div className="font-black mb-1 text-white">Top Rated</div>
+                            <div className="text-sm font-bold text-white/60">{selectedCar.rating} star rating from {selectedCar.reviews} reviews</div>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-4 p-4 rounded-2xl border-2 bg-white/5 border-white/10">
+                          <div className="p-3 rounded-xl bg-red-900/30">
+                            <Clock className="text-red-400" size={24} />
+                          </div>
+                          <div>
+                            <div className="font-black mb-1 text-white">Reliable</div>
+                            <div className="text-sm font-bold text-white/60">Well-maintained and thoroughly inspected</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column - Booking Card */}
+                  <div className="lg:col-span-1">
+                    <div className="rounded-3xl border-2 p-6 bg-white/5 border-white/10 sticky top-6">
+                      {/* Price */}
+                      <div className="mb-6 pb-6 border-b border-white/10">
+                        <div className="text-4xl font-black text-red-400">
+                          {formatPrice(selectedCar.price)}
+                        </div>
+                        <div className="mt-1 text-sm font-bold text-white/60">
+                          {selectedCar.listingType === 'rent' ? 'per day' : 'total price'}
+                        </div>
+                      </div>
+
+                      {/* CTA Button */}
+                      <button className="w-full py-4 rounded-2xl font-black text-lg border-2 tracking-wide transition-all bg-red-600 hover:bg-red-500 border-red-500 hover:border-red-400 text-white shadow-lg shadow-red-900/40 mb-4">
+                        {selectedCar.listingType === 'rent' ? 'Rent This Car' : 'Buy This Car'}
+                      </button>
+
+                      {/* 360 View Button */}
+                      <button className="w-full flex items-center justify-center gap-2 py-4 rounded-2xl font-black text-lg border-2 tracking-wide transition-all bg-white/10 hover:bg-white/20 border-white/20 hover:border-white/30 text-white mb-6">
+                        <RotateCw size={20} />
+                        View 360° Tour
+                      </button>
+
+                      {/* Contact Options */}
+                      <div className="space-y-3">
+                        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-bold transition-all hover:scale-105 bg-white/5 border-white/10 text-white hover:bg-white/10">
+                          <Phone size={18} />
+                          Call Us
+                        </button>
+                        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl border-2 font-bold transition-all hover:scale-105 bg-white/5 border-white/10 text-white hover:bg-white/10">
+                          <Mail size={18} />
+                          Email Us
+                        </button>
+                      </div>
+
+                      {/* Info */}
+                      <div className="mt-6 text-xs font-bold leading-relaxed text-white/60">
+                        <div>✓ Free cancellation up to 24 hours before pickup</div>
+                        <div>✓ Includes insurance and roadside assistance</div>
+                        <div>✓ No hidden fees or charges</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

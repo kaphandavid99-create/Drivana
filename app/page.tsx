@@ -2,8 +2,6 @@ import Hero from "./components/Hero";
 import BrandLogos from "./components/BrandLogos";
 import FeaturedCars from "./components/FeaturedCars";
 import WhyChooseUs from "./components/WhyChooseUs";
-import Navbar from "./components/Navbar";
-import Footer from "./components/Footer";
 import AboutUs from "./components/AboutUs";
 import FAQSection from "./components/FAQSection";
 

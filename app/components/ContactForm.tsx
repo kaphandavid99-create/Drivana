@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
+import emailjs from "@emailjs/browser";
 import {
   Mail,
   Phone,
@@ -10,7 +11,8 @@ import {
   CheckCircle2,
   Clock,
   User,
-  MessageSquare
+  MessageSquare,
+  AlertCircle
 } from "lucide-react";
 
 export default function ContactForm() {
@@ -23,24 +25,60 @@ export default function ContactForm() {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     setMounted(true);
+    // Initialize EmailJS with public key
+    const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    if (publicKey) {
+      emailjs.init(publicKey);
+    }
   }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-    setFormData({ name: "", email: "", phone: "", message: "" });
-    
-    // Reset success message after 3 seconds
-    setTimeout(() => setIsSubmitted(false), 3000);
+    setError("");
+
+    try {
+      const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
+      const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+      const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+
+      console.log("EmailJS Config:", { serviceId, templateId, publicKey: publicKey ? "***" : "missing" });
+
+      if (!serviceId || !templateId || !publicKey) {
+        throw new Error("EmailJS configuration is missing. Please check your environment variables.");
+      }
+
+      const templateParams = {
+        from_name: formData.name,
+        from_email: formData.email,
+        phone: formData.phone,
+        message: formData.message,
+        to_name: "Drivana Team",
+        to_email: "kaphandavid99@gmail.com",
+        to: "kaphandavid99@gmail.com",
+        recipient_email: "kaphandavid99@gmail.com",
+        email: "kaphandavid99@gmail.com"
+      };
+
+      await emailjs.send(serviceId, templateId, templateParams);
+
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      setFormData({ name: "", email: "", phone: "", message: "" });
+
+      // Reset success message after 3 seconds
+      setTimeout(() => setIsSubmitted(false), 3000);
+    } catch (err) {
+      setIsSubmitting(false);
+      console.error("EmailJS Error details:", err);
+      console.error("Error keys:", Object.keys(err));
+      console.error("Error message:", err instanceof Error ? err.message : JSON.stringify(err));
+      setError(err instanceof Error ? err.message : JSON.stringify(err));
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -293,6 +331,13 @@ export default function ContactForm() {
                       />
                     </div>
                   </div>
+
+                  {error && (
+                    <div className="flex items-center gap-2 p-3 bg-red-900/30 border-2 border-red-500 rounded-lg text-red-400 text-sm">
+                      <AlertCircle className="h-4 w-4 flex-shrink-0" />
+                      <span>{error}</span>
+                    </div>
+                  )}
 
                   <button
                     type="submit"

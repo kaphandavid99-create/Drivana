@@ -16,24 +16,29 @@ Mail,
 User,
 LogOut,
 Newspaper,
+Facebook,
+Instagram,
+MessageCircle,
 } from "lucide-react";
 import { useUser, useClerk } from "@clerk/nextjs";
 import { useTheme } from "../contexts/ThemeContext";
 import { useWishlist } from "../contexts/WishlistContext";
 import ThemeToggle from "./ThemeToggle";
+import { localCars } from "../../data/carData";
 const navLinks = [
 { name: "Home", href: "/", icon: Home },
 { name: "Cars", href: "/cars", icon: Car },
 { name: "Blog", href: "/blog", icon: Newspaper },
-{ name: "Sell", href: "/sell", icon: DollarSign },
 { name: "Contact", href: "/contact", icon: Mail },
 ];
 export default function Navbar() {
 const [isMenuOpen, setIsMenuOpen] = useState(false);
-const [isSearchOpen, setIsSearchOpen] = useState(false);
 const [searchQuery, setSearchQuery] = useState("");
+const [searchResults, setSearchResults] = useState<typeof localCars>([]);
 const [isScrolled, setIsScrolled] = useState(false);
 const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+const [showAutocomplete, setShowAutocomplete] = useState(false);
+const [isSearchOpen, setIsSearchOpen] = useState(false);
 const pathname = usePathname();
 const { isSignedIn, user } = useUser();
 const { signOut } = useClerk();
@@ -88,6 +93,37 @@ setIsScrolled(window.scrollY > 20);
 window.addEventListener('scroll', handleScroll);
 return () => window.removeEventListener('scroll', handleScroll);
 }, []);
+// Filter cars based on search query
+useEffect(() => {
+if (searchQuery.trim().length > 0) {
+const filtered = localCars.filter(car => 
+car.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+car.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+car.year.toString().includes(searchQuery)
+);
+setSearchResults(filtered);
+setShowAutocomplete(true);
+} else {
+setSearchResults([]);
+setShowAutocomplete(false);
+}
+}, [searchQuery]);
+// Close autocomplete when clicking outside
+useEffect(() => {
+const handleClickOutside = (event: MouseEvent) => {
+const target = event.target as Element;
+const searchElement = document.getElementById('search-container');
+if (searchElement && !searchElement.contains(target)) {
+setShowAutocomplete(false);
+}
+};
+if (showAutocomplete) {
+document.addEventListener('mousedown', handleClickOutside);
+}
+return () => {
+document.removeEventListener('mousedown', handleClickOutside);
+};
+}, [showAutocomplete]);
 const handleSearchSubmit = (e: React.FormEvent) => {
 e.preventDefault();
 if (searchQuery.trim()) {
@@ -155,23 +191,20 @@ resolvedTheme === 'light'
 </div>
 {/* Right Section - Search, Wishlist & Auth */}
 <div className="hidden md:flex items-center gap-1 sm:gap-2 flex-shrink-0">
-{/* Theme Toggle */}
-<ThemeToggle />
 {/* Search Toggle Button */}
 <button
 onClick={() => setIsSearchOpen(!isSearchOpen)}
-onTouchStart={() => setIsSearchOpen(!isSearchOpen)}
-className={`p-2 sm:p-2.5 rounded-full transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center ${
-isSearchOpen
-? "bg-sky-500 text-white"
-: resolvedTheme === 'light'
-? "text-sky-500 hover:text-white hover:bg-muted/50"
-: "text-white hover:text-sky-400 hover:bg-muted/50"
+className={`p-2 sm:p-2.5 rounded-full transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center ${
+resolvedTheme === 'light'
+? 'text-sky-500 hover:text-white hover:bg-muted/50'
+: 'text-white hover:text-sky-400 hover:bg-muted/50'
 }`}
 aria-label="Toggle search"
 >
-<Search className="h-4 w-4 sm:h-5 sm:w-5" />
+<Search className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
 </button>
+{/* Theme Toggle */}
+<ThemeToggle />
 {/* Wishlist Button */}
 <Link
 href="/wishlist"
@@ -318,25 +351,28 @@ priority
 </Link>
 {/* Mobile Right Section */}
 <div className="flex items-center gap-1 sm:gap-2 flex-shrink-0">
-{/* Theme Toggle */}
-<ThemeToggle />
 {/* Search Toggle Button */}
 <button
 onClick={() => setIsSearchOpen(!isSearchOpen)}
-onTouchStart={() => setIsSearchOpen(!isSearchOpen)}
-className={`p-2 sm:p-2.5 rounded-full transition-all duration-200 min-w-[44px] min-h-[44px] flex items-center justify-center ${
-isSearchOpen
-? "bg-sky-500 text-white"
-: "text-sky-500 hover:text-sky-600 hover:bg-gray-100"
+className={`p-2 sm:p-2.5 rounded-full transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center ${
+resolvedTheme === 'light'
+? 'text-sky-500 hover:text-sky-600 hover:bg-gray-100'
+: 'text-white hover:text-sky-400 hover:bg-white/10'
 }`}
 aria-label="Toggle search"
 >
-<Search className="h-4 w-4 sm:h-5 sm:w-5" />
+<Search className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
 </button>
+{/* Theme Toggle */}
+<ThemeToggle />
 {/* Wishlist Button */}
 <Link
 href="/wishlist"
-className="relative p-2 sm:p-2.5 rounded-full transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center text-sky-500 hover:text-sky-600 hover:bg-gray-100"
+className={`relative p-2 sm:p-2.5 rounded-full transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center ${
+resolvedTheme === 'light'
+? 'text-sky-500 hover:text-sky-600 hover:bg-gray-100'
+: 'text-white hover:text-sky-400 hover:bg-white/10'
+}`}
 aria-label="Wishlist"
 >
 <Heart className="h-4 w-4 sm:h-5 sm:w-5 transition-transform duration-200 group-hover:scale-110" />
@@ -362,15 +398,11 @@ aria-label="Toggle menu"
 </div>
 </div>
 </div>
-{/* Expandable Search Bar */}
-<div
-className={`overflow-hidden transition-all duration-300 ease-in-out ${
-isSearchOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
-}`}
->
+{/* Search Bar - Collapsible */}
+{isSearchOpen && (
 <div className="border-t border-border bg-background/95 backdrop-blur-md">
-<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3">
-<form onSubmit={handleSearchSubmit} className="relative">
+<div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-3 relative" id="search-container">
+<div className="relative">
 <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
 <input
 type="text"
@@ -378,18 +410,72 @@ placeholder="Search for cars, brands, models..."
 value={searchQuery}
 onChange={(e) => setSearchQuery(e.target.value)}
 className="w-full rounded-xl border border-border bg-muted/50 pl-12 pr-4 py-3 text-foreground placeholder-muted-foreground focus:border-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-500/20 transition-all"
-autoFocus={isSearchOpen}
 />
-<button
-type="submit"
-className="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-sky-500 px-4 py-1.5 text-sm font-medium text-white hover:bg-sky-600 transition-colors"
+</div>
+{/* Autocomplete Dropdown */}
+{showAutocomplete && searchResults.length > 0 && (
+<div className={`absolute top-full left-0 right-0 mt-2 rounded-xl border-2 shadow-2xl max-h-80 overflow-y-auto z-50 ${
+resolvedTheme === 'dark' 
+? 'bg-slate-900 border-slate-800' 
+: 'bg-white border-slate-200'
+}`}>
+{searchResults.slice(0, 8).map((car) => (
+<Link
+key={car.id}
+href={`/cars/${car.id}`}
+onClick={() => {
+setSearchQuery('');
+setShowAutocomplete(false);
+}}
+className={`flex items-center gap-4 px-4 py-3 transition-all hover:bg-sky-500/10 ${
+resolvedTheme === 'dark' ? 'text-white' : 'text-slate-900'
+}`}
 >
-Search
-</button>
-</form>
+<div className="relative w-16 h-12 rounded-lg overflow-hidden flex-shrink-0">
+<Image
+src={car.images?.exterior || '/Cars/2007 camaro concept/exterior.jpeg'}
+alt={car.name}
+fill
+className="object-cover"
+sizes="64px"
+/>
+</div>
+<div className="flex-grow min-w-0">
+<div className="font-bold text-sm truncate">{car.name}</div>
+<div className={`text-xs flex items-center gap-2 ${
+resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-600'
+}`}>
+<span>{car.type}</span>
+<span>•</span>
+<span>{car.year}</span>
+<span>•</span>
+<span>{car.fuel}</span>
 </div>
 </div>
+<div className={`text-sm font-bold ${
+resolvedTheme === 'dark' ? 'text-sky-400' : 'text-sky-600'
+}`}>
+{car.price > 100000 
+? `${(car.price / 1000000).toFixed(1)}M FCFA` 
+: `${car.price.toLocaleString()} FCFA`}
 </div>
+</Link>
+))}
+</div>
+)}
+{showAutocomplete && searchResults.length === 0 && searchQuery.trim().length > 0 && (
+<div className={`absolute top-full left-0 right-0 mt-2 rounded-xl border-2 p-4 text-center z-50 ${
+resolvedTheme === 'dark' 
+? 'bg-slate-900 border-slate-800 text-slate-400' 
+: 'bg-white border-slate-200 text-slate-600'
+}`}>
+<div className="font-bold">No cars found matching "{searchQuery}"</div>
+</div>
+)}
+</div>
+</div>
+)}
+</nav>
 {/* Mobile Menu */}
 <div
 id="mobile-menu"
@@ -534,7 +620,6 @@ className="flex items-center justify-center rounded-lg px-4 py-3 bg-white text-b
 </div>
 </div>
 </div>
-</nav>
 </>
 );
 }

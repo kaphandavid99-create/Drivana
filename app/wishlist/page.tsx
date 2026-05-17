@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { Heart, Fuel, Users, Zap, ArrowLeft, Trash2, CarFront, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useWishlist } from "../contexts/WishlistContext";
-import { localCars } from "../../data/carData";
+import { localCars, rentCars } from "../../data/carData";
 
 type Car = {
   id: number;
@@ -77,7 +77,7 @@ function formatPrice(price: number, listingType: "rent" | "sell") {
   if (price > 100000) {
     return `${(price / 1000000).toFixed(1)}M FCFA`;
   }
-  return `${price.toLocaleString()} FCFA`;
+  return `${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} FCFA`;
 }
 
 function priceSuffix(listingType: "rent" | "sell") {
@@ -86,15 +86,15 @@ function priceSuffix(listingType: "rent" | "sell") {
 
 export default function WishlistPage() {
   const { resolvedTheme } = useTheme();
-  const { wishlist, removeFromWishlist } = useWishlist();
+  const { wishlistIds, toggleWishlist } = useWishlist();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
 
-  const allCars = [...toyotaCars, ...(localCars as unknown as Car[])];
-  const wishlistCars = allCars.filter((car) => wishlist.includes(car.id));
+  const allCars = [...toyotaCars, ...(localCars as unknown as Car[]), ...(rentCars as unknown as Car[])];
+  const wishlistCars = allCars.filter((car) => wishlistIds.includes(car.id));
 
   if (!mounted) {
     return null;
@@ -226,7 +226,7 @@ export default function WishlistPage() {
                 <div className="relative h-48 bg-slate-800 overflow-hidden">
                   <Link href={`/cars/${car.id}`} className="absolute inset-0 z-0">
                     <Image
-                      src={car.image}
+                      src={(car as any).images?.exterior || car.image || "/placeholder-car.jpg"}
                       alt={car.name}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-700"
@@ -268,7 +268,7 @@ export default function WishlistPage() {
 
                     {/* Remove Button */}
                     <button
-                      onClick={() => removeFromWishlist(car.id)}
+                      onClick={() => toggleWishlist(car.id)}
                       className={`p-2 rounded-full backdrop-blur-md border-2 transition-all hover:scale-110 ${
                         resolvedTheme === "dark"
                           ? "bg-red-500/80 border-red-400 shadow-lg shadow-red-500/50"
@@ -331,11 +331,18 @@ export default function WishlistPage() {
                     }`}
                   >
                     <p
+                      className={`text-[10px] line-through ${
+                        resolvedTheme === "dark" ? "text-slate-500" : "text-slate-400"
+                      }`}
+                    >
+                      {formatPrice((car as any).strikingPrice || car.price)}
+                    </p>
+                    <p
                       className={`text-lg font-bold ${
                         resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
                       }`}
                     >
-                      {formatPrice(car.price)}
+                      {formatPrice((car as any).realPrice || car.price)}
                     </p>
                     <p
                       className={`text-[10px] ${

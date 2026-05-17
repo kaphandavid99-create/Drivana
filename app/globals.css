@@ -129,3 +129,35 @@ select::-webkit-calendar-picker-indicator {
   top: 0;
   width: auto;
 }
+
+/* Override Clerk component internal styling for centering on mobile */
+[class*="cl-"] {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.cl-rootBox {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+.cl-card {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+@media (max-width: 640px) {
+  .cl-rootBox {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  .cl-card {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+  }
+}

@@ -58,7 +58,7 @@ export default function WhyChooseUsPage() {
           transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
         >
           <motion.div 
-            className="space-y-6"
+            className="space-y-6 text-center"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}

@@ -7,6 +7,7 @@ type WishlistContextValue = {
   toggleWishlist: (carId: number) => void;
   isWishlisted: (carId: number) => boolean;
   clearWishlist: () => void;
+  wishlistCount: number;
 };
 
 const WishlistContext = createContext<WishlistContextValue | undefined>(undefined);
@@ -81,6 +82,7 @@ export function WishlistProvider({ children }: { children: React.ReactNode }) {
         return wishlistIds.includes(normalizedId);
       },
       clearWishlist,
+      wishlistCount: wishlistIds.length,
     }),
     [wishlistIds]
   );

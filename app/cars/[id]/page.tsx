@@ -1,6 +1,7 @@
 import CarDetailClient from "./CarDetailClient";
 
-export default function CarDetailPage({ params }: { params: { id: string } }) {
-  // Server Component: safe to read params here
-  return <CarDetailClient carId={params.id} />;
+export default async function CarDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  // Server Component: params is async in Next.js 15+
+  const resolvedParams = await params;
+  return <CarDetailClient carId={resolvedParams.id} />;
 }

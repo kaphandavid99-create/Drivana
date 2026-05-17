@@ -20,7 +20,7 @@ export default function RootLayout({
     <ClerkProvider publishableKey={process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY}>
       <ThemeProvider>
         <WishlistProvider>
-          <html lang="en" className="h-full antialiased">
+          <html lang="en" className="h-full antialiased" suppressHydrationWarning>
             <body className="min-h-full flex flex-col overflow-x-hidden">
                 <Navbar />
                 <main className="flex-1">{children}</main>

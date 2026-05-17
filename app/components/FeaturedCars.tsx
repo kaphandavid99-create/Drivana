@@ -7,20 +7,21 @@ import { motion } from "framer-motion";
 import { Heart, Users, Fuel, Gauge, ChevronRight, Star } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
 import { useWishlist } from "../contexts/WishlistContext";
-import { localCars } from "../../data/carData";
+import { localCars, rentCars } from "../../data/carData";
 
-// Use only local cars with images from public folder
-const featuredCars = localCars.slice(0, 4);
+// Combine both sell and rent cars for featured section
+const allFeaturedCars = [...localCars.slice(0, 2), ...rentCars.slice(0, 2)];
+const featuredCars = allFeaturedCars.slice(0, 4);
 
 export default function FeaturedCars() {
   const { resolvedTheme } = useTheme();
-  const { isInWishlist, toggleWishlist } = useWishlist();
+  const { isWishlisted, toggleWishlist } = useWishlist();
 
   const formatPrice = (price: number) => {
     if (price > 100000) {
       return `${(price / 1000000).toFixed(1)}M FCFA`;
     }
-    return `${price.toLocaleString()} FCFA`;
+    return `${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} FCFA`;
   };
 
   return (
@@ -77,12 +78,12 @@ export default function FeaturedCars() {
               <Link
                 href={`/cars/${car.id}`}
                 aria-label={`View details for ${car.name}`}
-                className="absolute inset-0 z-0"
+                className="absolute inset-0 z-20"
               />
               {/* Image Container - More Visible */}
-              <div className="relative z-10 h-64 bg-slate-800 overflow-hidden">
+              <div className="relative z-10 h-40 bg-slate-800 overflow-hidden pointer-events-none">
                 <Image
-                  src={car.image}
+                  src={car.images?.exterior || "/placeholder-car.jpg"}
                   alt={car.name}
                   fill
                   className="object-cover group-hover:scale-110 transition-transform duration-700 brightness-110 contrast-105 saturate-110"
@@ -96,9 +97,9 @@ export default function FeaturedCars() {
                 }`} />
 
                 {/* Badges Container */}
-                <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start relative z-10">
+                <div className="absolute top-0 left-0 right-0 p-4 flex justify-between items-start relative z-10 pointer-events-none">
                   {/* Type & Year Badges */}
-                  <div className="flex gap-2">
+                  <div className="flex gap-2 pointer-events-auto">
                     <span className={`px-4 py-2 rounded-full text-xs font-bold backdrop-blur-md border ${
                       car.listingType === 'rent'
                         ? 'bg-emerald-500/80 border-emerald-400 text-white'
@@ -117,22 +118,19 @@ export default function FeaturedCars() {
 
                   {/* Wishlist */}
                   <button
-                    onClick={() => toggleWishlist(car.id)}
-                    className={`p-3 rounded-full backdrop-blur-md border-2 transition-all hover:scale-110 ${
-                      isInWishlist(car.id)
-                        ? 'bg-red-500/80 border-red-400 shadow-lg shadow-red-500/50'
-                        : resolvedTheme === 'dark'
-                          ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-800/80'
-                          : 'bg-white/80 border-slate-300 hover:bg-white'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      toggleWishlist(car.id);
+                    }}
+                    className={`p-3 rounded-full backdrop-blur-md border-2 transition-all hover:scale-110 bg-white border-slate-300 pointer-events-auto ${
+                      isWishlisted(car.id) ? 'shadow-lg shadow-red-500/50' : ''
                     }`}
                   >
                     <Heart
                       className={`w-5 h-5 ${
-                        isInWishlist(car.id)
-                          ? 'fill-white text-white'
-                          : resolvedTheme === 'dark'
-                            ? 'text-slate-400'
-                            : 'text-slate-600'
+                        isWishlisted(car.id)
+                          ? 'fill-red-500 text-red-500'
+                          : 'text-black'
                       }`}
                     />
                   </button>
@@ -140,11 +138,11 @@ export default function FeaturedCars() {
               </div>
 
               {/* Content Section */}
-              <div className={`relative z-10 p-4 flex flex-col flex-grow ${
+              <div className={`relative z-10 p-3 flex flex-col flex-grow pointer-events-none ${
                 resolvedTheme === 'dark' ? 'bg-slate-900' : 'bg-white'
               }`}>
                 {/* Title & Rating */}
-                <div className="flex items-start justify-between mb-2">
+                <div className="flex items-start justify-between mb-1">
                   <div>
                     <h3 className={`text-lg font-bold line-clamp-1 tracking-tight ${
                       resolvedTheme === 'dark' ? 'text-white' : 'text-slate-900'
@@ -178,10 +176,15 @@ export default function FeaturedCars() {
                 <div className={`mb-4 pb-4 border-b ${
                   resolvedTheme === 'dark' ? 'border-slate-800' : 'border-slate-200'
                 }`}>
+                  <p className={`text-xs line-through ${
+                    resolvedTheme === 'dark' ? 'text-slate-500' : 'text-slate-400'
+                  }`}>
+                    {formatPrice(car.strikingPrice || car.price)}
+                  </p>
                   <p className={`text-xl font-bold ${
                     resolvedTheme === 'dark' ? 'text-red-400' : 'text-red-600'
                   }`}>
-                    {formatPrice(car.price)}
+                    {formatPrice(car.realPrice || car.price)}
                   </p>
                   <p className={`text-xs ${
                     resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-600'
@@ -191,7 +194,7 @@ export default function FeaturedCars() {
                 </div>
 
                 {/* Specs Grid */}
-                <div className="grid grid-cols-3 gap-2 mb-4">
+                <div className="grid grid-cols-3 gap-2 mb-3">
                   {/* Seats */}
                   <div className={`flex flex-col items-center p-2 rounded-lg border-2 transition-all ${
                     resolvedTheme === 'dark'
@@ -242,7 +245,7 @@ export default function FeaturedCars() {
                 </div>
 
                 {/* Features */}
-                <div className="mb-4">
+                <div className="mb-2">
                   <div className="flex flex-wrap gap-1.5">
                     {car.features.slice(0, 3).map((feature, idx) => (
                       <span
@@ -273,7 +276,7 @@ export default function FeaturedCars() {
                   <button
                     type="button"
                     onClick={(e) => e.stopPropagation()}
-                    className={`w-full py-3 rounded-xl font-bold text-sm transition-all border-2 tracking-wide ${
+                    className={`w-full py-2 rounded-xl font-bold text-sm transition-all border-2 tracking-wide ${
                       resolvedTheme === 'dark'
                         ? 'bg-red-700 hover:bg-red-600 border-red-600 hover:border-red-500 text-white shadow-lg shadow-red-900/40 hover:shadow-red-900/60'
                         : 'bg-red-500 hover:bg-red-600 border-red-400 hover:border-red-500 text-white shadow-lg shadow-red-500/30 hover:shadow-red-500/50'

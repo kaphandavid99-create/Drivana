@@ -31,8 +31,14 @@ export default function ContactForm() {
     setMounted(true);
     // Initialize EmailJS with public key
     const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
+    console.log("EmailJS Init - Public Key exists:", !!publicKey);
+    console.log("EmailJS Init - Public Key length:", publicKey?.length);
+    console.log("EmailJS Init - Public Key prefix:", publicKey?.substring(0, 10) + "...");
     if (publicKey) {
       emailjs.init(publicKey);
+      console.log("EmailJS initialized successfully");
+    } else {
+      console.error("EmailJS Public Key is missing from environment variables");
     }
   }, []);
 

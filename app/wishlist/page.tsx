@@ -335,14 +335,14 @@ export default function WishlistPage() {
                         resolvedTheme === "dark" ? "text-slate-500" : "text-slate-400"
                       }`}
                     >
-                      {formatPrice((car as any).strikingPrice || car.price)}
+                      {formatPrice((car as any).strikingPrice || car.price, car.listingType)}
                     </p>
                     <p
                       className={`text-lg font-bold ${
                         resolvedTheme === "dark" ? "text-red-400" : "text-red-600"
                       }`}
                     >
-                      {formatPrice((car as any).realPrice || car.price)}
+                      {formatPrice((car as any).realPrice || car.price, car.listingType)}
                     </p>
                     <p
                       className={`text-[10px] ${

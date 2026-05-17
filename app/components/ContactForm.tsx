@@ -75,7 +75,9 @@ export default function ContactForm() {
     } catch (err) {
       setIsSubmitting(false);
       console.error("EmailJS Error details:", err);
-      console.error("Error keys:", Object.keys(err));
+      if (typeof err === 'object' && err !== null) {
+        console.error("Error keys:", Object.keys(err));
+      }
       console.error("Error message:", err instanceof Error ? err.message : JSON.stringify(err));
       setError(err instanceof Error ? err.message : JSON.stringify(err));
     }

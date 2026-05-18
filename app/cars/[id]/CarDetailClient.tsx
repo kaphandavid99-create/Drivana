@@ -46,7 +46,6 @@ function priceSuffix(listingType: "rent" | "sell") {
 export default function CarDetailClient({ carId }: Props) {
   const { resolvedTheme } = useTheme();
   const { isWishlisted, toggleWishlist } = useWishlist();
-  const { isSignedIn } = useUser();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [activeView, setActiveView] = useState<'exterior' | 'interior' | 'dashboard' | 'engine'>('exterior');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -69,30 +68,6 @@ export default function CarDetailClient({ carId }: Props) {
     { name: 'Ruby Red', hex: '#8b0000' },
     { name: 'Sunburst Yellow', hex: '#FFD700' }
   ];
-
-  if (!isSignedIn) {
-    return (
-      <div className={`min-h-screen py-16 px-4 flex items-center justify-center ${resolvedTheme === "dark" ? "bg-slate-950" : "bg-slate-50"}`}>
-        <div className="max-w-md w-full rounded-3xl border p-10 text-center">
-          <div className={`w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center ${resolvedTheme === "dark" ? "bg-slate-800" : "bg-slate-200"}`}>
-            <FaUser className={resolvedTheme === "dark" ? "text-4xl text-slate-400" : "text-4xl text-slate-600"} />
-          </div>
-          <h1 className="text-3xl font-black mb-4">Sign In Required</h1>
-          <p className={`mb-8 font-bold ${resolvedTheme === "dark" ? "text-slate-400" : "text-slate-600"}`}>
-            You need to sign in to view car details
-          </p>
-          <div className="space-y-3">
-            <Link href="/sign-in" className="block w-full py-3 px-6 rounded-2xl font-black text-base border tracking-wide transition-all bg-sky-500 hover:bg-sky-600 border-sky-400 hover:border-sky-500 text-white shadow-lg shadow-sky-500/30">
-              Sign In
-            </Link>
-            <Link href="/cars" className="block w-full py-3 px-6 rounded-2xl font-black text-base border tracking-wide transition-all hover:bg-slate-100 dark:hover:bg-slate-800">
-              Back to Cars
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   if (!car) {
     return (

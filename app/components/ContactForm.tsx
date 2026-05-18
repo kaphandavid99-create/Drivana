@@ -50,27 +50,39 @@ export default function ContactForm() {
     try {
       const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
+      const autoReplyTemplateId = process.env.NEXT_PUBLIC_EMAILJS_AUTOREPLY_TEMPLATE_ID;
       const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-      console.log("EmailJS Config:", { serviceId, templateId, publicKey: publicKey ? "***" : "missing" });
+      console.log("EmailJS Config:", { serviceId, templateId, autoReplyTemplateId, publicKey: publicKey ? "***" : "missing" });
 
       if (!serviceId || !templateId || !publicKey) {
         throw new Error("EmailJS configuration is missing. Please check your environment variables.");
       }
 
-      const templateParams = {
+      // Send notification email to you
+      const notificationParams = {
         from_name: formData.name,
         from_email: formData.email,
         phone: formData.phone,
         message: formData.message,
         to_name: "Drivana Team",
         to_email: "kaphandavid99@gmail.com",
-        to: "kaphandavid99@gmail.com",
-        recipient_email: "kaphandavid99@gmail.com",
-        email: "formData.email"
       };
 
-      await emailjs.send(serviceId, templateId, templateParams);
+      await emailjs.send(serviceId, templateId, notificationParams);
+
+      // Send auto-reply email to user
+      if (autoReplyTemplateId) {
+        const autoReplyParams = {
+          to_name: formData.name,
+          to_email: formData.email,
+          from_name: "Drivana Team",
+          from_email: "kaphandavid99@gmail.com",
+          message: formData.message
+        };
+
+        await emailjs.send(serviceId, autoReplyTemplateId, autoReplyParams);
+      }
 
       setIsSubmitting(false);
       setIsSubmitted(true);

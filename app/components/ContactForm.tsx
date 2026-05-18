@@ -111,7 +111,7 @@ export default function ContactForm() {
 
       <div className="max-w-5xl mx-auto relative z-10">
         {/* Section Header */}
-        <div className="text-center mb-6">
+        <div className="text-center">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-zinc-900 border-2 border-sky-500 mb-4">
             <Mail className="h-4 w-4 text-sky-400" />
             <span className="text-sm text-white font-medium">Get in Touch</span>
@@ -147,7 +147,7 @@ export default function ContactForm() {
                     <Phone className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-foreground mb-1">Phone</h3>
+                    <h3 className="text-base font-bold text-white mb-1">Phone</h3>
                     <p className="text-sky-400 font-medium">+1 (555) 123-4567</p>
                     <p className="text-sm text-white mt-1">Mon - Fri, 9am - 6pm</p>
                   </div>
@@ -165,7 +165,7 @@ export default function ContactForm() {
                     <Mail className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-foreground mb-1">Email</h3>
+                    <h3 className="text-base font-bold text-white mb-1">Email</h3>
                     <p className="text-sky-400 font-medium">contact@drivana.com</p>
                     <p className="text-sm text-white mt-1">We respond within 24 hours</p>
                   </div>
@@ -183,7 +183,7 @@ export default function ContactForm() {
                     <MapPin className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-foreground mb-1">Location</h3>
+                    <h3 className="text-base font-bold text-white mb-1">Location</h3>
                     <p className="text-sky-400 font-medium">123 Auto Drive</p>
                     <p className="text-white">Car City, CC 12345</p>
                   </div>
@@ -201,7 +201,7 @@ export default function ContactForm() {
                     <Clock className="h-5 w-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-foreground mb-1">Business Hours</h3>
+                    <h3 className="text-base font-bold text-white mb-1">Business Hours</h3>
                     <p className="text-white">Monday - Friday: 9am - 6pm</p>
                     <p className="text-white">Saturday: 10am - 4pm</p>
                     <p className="text-white">Sunday: Closed</p>

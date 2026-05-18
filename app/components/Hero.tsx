@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTheme } from "../contexts/ThemeContext";
 import {
   MapPin,
@@ -59,10 +60,17 @@ function Badge({ children, className = "" }: any) {
 
 export default function Hero() {
   const { resolvedTheme } = useTheme();
+  const router = useRouter();
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [mode, setMode] = useState<"rent" | "buy">("rent");
   const [mounted, setMounted] = useState(false);
   const [selectedCarType, setSelectedCarType] = useState("");
+  const [rentLocation, setRentLocation] = useState("");
+  const [buyLocation, setBuyLocation] = useState("");
+  const [pickupDate, setPickupDate] = useState("");
+  const [returnDate, setReturnDate] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+  const [buyCarType, setBuyCarType] = useState("");
   const desktopVideoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -205,6 +213,8 @@ export default function Hero() {
                             <input
                               type="text"
                               placeholder="Enter city or airport"
+                              value={rentLocation}
+                              onChange={(e) => setRentLocation(e.target.value)}
                               className="w-full pl-10 pr-3 sm:pr-4 py-2 sm:py-3 bg-black/80 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all text-sm sm:text-base"
                             />
                           </div>
@@ -245,6 +255,8 @@ export default function Hero() {
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-sky-400" />
                             <input
                               type="date"
+                              value={pickupDate}
+                              onChange={(e) => setPickupDate(e.target.value)}
                               className="w-full pl-10 pr-4 py-3 bg-black/40 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all [color-scheme:dark]"
                             />
                           </div>
@@ -259,6 +271,8 @@ export default function Hero() {
                             <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-sky-400" />
                             <input
                               type="date"
+                              value={returnDate}
+                              onChange={(e) => setReturnDate(e.target.value)}
                               className="w-full pl-10 pr-4 py-3 bg-black/40 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all [color-scheme:dark]"
                             />
                           </div>
@@ -266,7 +280,18 @@ export default function Hero() {
                       </div>
 
                       {/* Search Button */}
-                      <button className="w-full mt-4 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-gray-500/20">
+                      <button 
+                        onClick={() => {
+                          const params = new URLSearchParams();
+                          params.set('mode', 'rent');
+                          if (rentLocation) params.set('location', rentLocation);
+                          if (selectedCarType) params.set('type', selectedCarType);
+                          if (pickupDate) params.set('pickupDate', pickupDate);
+                          if (returnDate) params.set('returnDate', returnDate);
+                          router.push(`/cars?${params.toString()}`);
+                        }}
+                        className="w-full mt-4 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-gray-500/20"
+                      >
                         <Search className="h-5 w-5" />
                         Search Available Cars
                       </button>
@@ -287,6 +312,8 @@ export default function Hero() {
                             <input
                               type="text"
                               placeholder="Enter city or area"
+                              value={buyLocation}
+                              onChange={(e) => setBuyLocation(e.target.value)}
                               className="w-full pl-10 pr-3 sm:pr-4 py-2 sm:py-3 bg-black/80 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all text-sm sm:text-base"
                             />
                           </div>
@@ -299,7 +326,10 @@ export default function Hero() {
                           </label>
                           <div className="relative">
                             <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-sky-400" />
-                            <select className="w-full pl-10 pr-4 py-3 bg-black border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all appearance-none cursor-pointer"
+                            <select 
+                              value={priceRange}
+                              onChange={(e) => setPriceRange(e.target.value)}
+                              className="w-full pl-10 pr-4 py-3 bg-black border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all appearance-none cursor-pointer"
                               style={{ backgroundColor: 'black', color: 'white' }}
                               data-color-scheme="dark">
                               <option value="" className="bg-black">Any Price</option>
@@ -319,7 +349,10 @@ export default function Hero() {
                           </label>
                           <div className="relative">
                             <CarFront className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-sky-400" />
-                            <select className="w-full pl-10 pr-4 py-3 bg-background/40 border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all appearance-none cursor-pointer">
+                            <select 
+                              value={buyCarType}
+                              onChange={(e) => setBuyCarType(e.target.value)}
+                              className="w-full pl-10 pr-4 py-3 bg-background/40 border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/50 focus:border-sky-500 transition-all appearance-none cursor-pointer">
                               <option value="" className="bg-background">All Types</option>
                               <option value="sedan" className="bg-background">Sedan</option>
                               <option value="suv" className="bg-background">SUV</option>
@@ -332,7 +365,17 @@ export default function Hero() {
                       </div>
 
                       {/* Search Button */}
-                      <button className="w-full mt-4 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-gray-500/20">
+                      <button 
+                        onClick={() => {
+                          const params = new URLSearchParams();
+                          params.set('mode', 'buy');
+                          if (buyLocation) params.set('location', buyLocation);
+                          if (buyCarType) params.set('type', buyCarType);
+                          if (priceRange) params.set('priceRange', priceRange);
+                          router.push(`/cars?${params.toString()}`);
+                        }}
+                        className="w-full mt-4 bg-gray-500 hover:bg-gray-600 text-white py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition-all shadow-lg shadow-gray-500/20"
+                      >
                         <Search className="h-5 w-5" />
                         Find Cars for Sale
                       </button>

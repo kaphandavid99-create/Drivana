@@ -47,7 +47,15 @@ export default function CarsPage() {
     // Search is now always active, filters update in real-time
   };
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number, listingType?: string) => {
+    // For rental prices, use thousands (K) instead of millions (M)
+    if (listingType === 'rent') {
+      if (price >= 1000) {
+        return `${(price / 1000).toFixed(0)}K FCFA`;
+      }
+      return `${price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")} FCFA`;
+    }
+    // For sale prices, use millions (M)
     if (price > 100000) {
       return `${(price / 1000000).toFixed(1)}M FCFA`;
     }
@@ -462,19 +470,15 @@ export default function CarsPage() {
                       onClick={() => toggleWishlist(car.id)}
                       className={`p-2 rounded-full backdrop-blur-md border-2 transition-all hover:scale-110 ${
                         isWishlisted(car.id)
-                          ? 'bg-red-500/80 border-red-400 shadow-lg shadow-red-500/50'
-                          : resolvedTheme === 'dark'
-                            ? 'bg-slate-900/50 border-slate-700 hover:bg-slate-800/80'
-                            : 'bg-white/80 border-slate-300 hover:bg-white'
+                          ? 'bg-white border-red-400 shadow-lg shadow-red-500/50'
+                          : 'bg-white border-slate-300 hover:bg-white'
                       }`}
                     >
                       <Heart
                         className={`w-4 h-4 ${
                           isWishlisted(car.id)
-                            ? 'fill-white text-white'
-                            : resolvedTheme === 'dark'
-                              ? 'text-slate-400'
-                              : 'text-slate-600'
+                            ? 'fill-red-500 text-red-500'
+                            : 'text-black'
                         }`}
                       />
                     </button>
@@ -528,12 +532,12 @@ export default function CarsPage() {
                     <p className={`text-[10px] line-through ${
                       resolvedTheme === 'dark' ? 'text-slate-500' : 'text-slate-400'
                     }`}>
-                      {formatPrice((car as any).strikingPrice || car.price)}
+                      {formatPrice((car as any).strikingPrice || car.price, car.listingType)}
                     </p>
                     <p className={`text-lg font-bold ${
                       resolvedTheme === 'dark' ? 'text-red-400' : 'text-red-600'
                     }`}>
-                      {formatPrice((car as any).realPrice || car.price)}
+                      {formatPrice((car as any).realPrice || car.price, car.listingType)}
                     </p>
                     <p className={`text-[10px] ${
                       resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-600'

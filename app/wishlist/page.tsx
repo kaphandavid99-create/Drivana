@@ -86,7 +86,7 @@ function priceSuffix(listingType: "rent" | "sell") {
 
 export default function WishlistPage() {
   const { resolvedTheme } = useTheme();
-  const { wishlistIds, toggleWishlist } = useWishlist();
+  const { wishlistIds, toggleWishlist, clearWishlist } = useWishlist();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export default function WishlistPage() {
           className="mb-12"
         >
           <div className="flex items-center gap-4 mb-6">
-            <Link href="/cars" className="inline-flex items-center gap-2">
+            <Link href="/cars" className="inline-flex items-center gap-2 lg:hidden">
               <span
                 className={`inline-flex items-center justify-center w-10 h-10 rounded-xl border-2 ${
                   resolvedTheme === "dark"
@@ -126,7 +126,7 @@ export default function WishlistPage() {
                 <ArrowLeft className={resolvedTheme === "dark" ? "text-slate-200" : "text-slate-700"} />
               </span>
             </Link>
-            <div>
+            <div className="flex-1">
               <h1
                 className={`text-4xl md:text-5xl font-bold tracking-tight ${
                   resolvedTheme === "dark" ? "text-white" : "text-slate-900"
@@ -142,6 +142,19 @@ export default function WishlistPage() {
                 {wishlistCars.length} {wishlistCars.length === 1 ? "car" : "cars"} saved
               </p>
             </div>
+            {wishlistCars.length > 0 && (
+              <button
+                onClick={clearWishlist}
+                className={`px-4 py-2 rounded-xl font-bold text-sm transition-all border-2 flex items-center gap-2 ${
+                  resolvedTheme === "dark"
+                    ? "bg-red-600 hover:bg-red-500 border-red-500 text-white shadow-lg shadow-red-900/40"
+                    : "bg-red-500 hover:bg-red-600 border-red-400 text-white shadow-lg shadow-red-500/30"
+                }`}
+              >
+                <Trash2 className="w-4 h-4" />
+                Clear All
+              </button>
+            )}
           </div>
         </motion.div>
 
@@ -197,7 +210,7 @@ export default function WishlistPage() {
         ) : (
           /* Cars Grid */
           <motion.div
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
             initial="hidden"
             animate="visible"
             variants={{

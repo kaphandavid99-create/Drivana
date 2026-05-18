@@ -195,7 +195,16 @@ export default function BookNowPage({ params }: Props) {
                         />
                         <button
                           type="button"
-                          onClick={() => document.getElementById('pickupDate')?.showPicker?.() || (document.getElementById('pickupDate') as HTMLInputElement)?.focus()}
+                          onClick={() => {
+                            const input = document.getElementById('pickupDate') as HTMLInputElement;
+                            if (input) {
+                              if (typeof input.showPicker === 'function') {
+                                input.showPicker();
+                              } else {
+                                input.focus();
+                              }
+                            }
+                          }}
                           className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg transition-all hover:scale-110 ${
                             resolvedTheme === "dark" ? "text-slate-400 hover:text-sky-400" : "text-slate-500 hover:text-sky-500"
                           }`}

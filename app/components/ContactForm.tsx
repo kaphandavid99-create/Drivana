@@ -67,7 +67,7 @@ export default function ContactForm() {
         to_email: "kaphandavid99@gmail.com",
         to: "kaphandavid99@gmail.com",
         recipient_email: "kaphandavid99@gmail.com",
-        email: "kaphandavid99@gmail.com"
+        email: "formData.email"
       };
 
       await emailjs.send(serviceId, templateId, templateParams);

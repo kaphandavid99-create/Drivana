@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Fuel, Users, Zap, ChevronDown, X, MapPin, Calendar, CarFront, Wallet, Search, Star, Shield, CheckCircle2, Maximize2, Phone, Mail, Info, Award, TrendingUp, Check, Clock, RotateCw, ChevronLeft, ChevronRight } from "lucide-react";
 import { useTheme } from "../contexts/ThemeContext";
@@ -14,6 +15,7 @@ const allCars = [...localCars, ...rentCars];
 export default function CarsPage() {
   const { resolvedTheme } = useTheme();
   const { isWishlisted, toggleWishlist } = useWishlist();
+  const searchParams = useSearchParams();
   const [filterOpen, setFilterOpen] = useState(false);
   const [selectedType, setSelectedType] = useState("");
   const [selectedFuel, setSelectedFuel] = useState("all");
@@ -30,7 +32,35 @@ export default function CarsPage() {
 
   useEffect(() => {
     setMounted(true);
-  }, []);
+    
+    // Read query parameters from URL
+    const modeParam = searchParams.get('mode');
+    const locationParam = searchParams.get('location');
+    const typeParam = searchParams.get('type');
+    const priceRangeParam = searchParams.get('priceRange');
+    const pickupDateParam = searchParams.get('pickupDate');
+    const returnDateParam = searchParams.get('returnDate');
+    
+    // Set state from query parameters
+    if (modeParam === 'rent' || modeParam === 'buy') {
+      setMode(modeParam);
+    }
+    if (locationParam) {
+      setLocation(locationParam);
+    }
+    if (typeParam) {
+      setSelectedType(typeParam);
+    }
+    if (priceRangeParam) {
+      setPriceRange(priceRangeParam);
+    }
+    if (pickupDateParam) {
+      setPickupDate(pickupDateParam);
+    }
+    if (returnDateParam) {
+      setReturnDate(returnDateParam);
+    }
+  }, [searchParams]);
 
   const carTypes = ["all", "Sedan", "SUV", "Sports", "Truck", "Van", "Convertible", "Hybrid"];
   const fuelTypes = ["all", "Gasoline", "Diesel", "Hybrid", "Electric"];
@@ -141,7 +171,7 @@ export default function CarsPage() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="mb-12"
         >
-          <div className={`relative overflow-hidden rounded-3xl border-2 border-sky-300 ${
+          <div className={`relative overflow-hidden rounded-3xl border border-sky-300 ${
             resolvedTheme === 'dark'
               ? 'bg-gradient-to-br from-slate-900/90 via-slate-800/90 to-slate-900/90'
               : 'bg-gradient-to-br from-white/90 via-slate-50/90 to-white/90'

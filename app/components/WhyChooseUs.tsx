@@ -11,8 +11,8 @@ export default function WhyChooseUsPage() {
   return (
     <main className={`min-h-screen flex items-center justify-center px-4 sm:px-6 py-20 md:px-12 lg:px-20 overflow-x-hidden ${
       resolvedTheme === 'dark' 
-        ? 'bg-gradient-to-br from-gray-900 via-black to-gray-800' 
-        : 'bg-gradient-to-br from-slate-50 via-white to-sky-50'
+        ? 'bg-gray-900' 
+        : 'bg-slate-50'
     }`}>
       <motion.section 
           className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center"
@@ -30,10 +30,9 @@ export default function WhyChooseUsPage() {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
-          <div className="absolute -inset-1 bg-gradient-to-r from-sky-600 to-blue-600 rounded-3xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
           <div className="relative w-full h-[400px] md:h-[550px] overflow-hidden rounded-3xl shadow-2xl transform transition-all duration-700 hover:scale-105 bg-gray-900">
             {/* Dark Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-gray-900 via-black to-gray-800 z-0"></div>
+            <div className="absolute inset-0 bg-gray-900 z-0"></div>
             
             {/* Three.js Particles */}
             <div className="absolute inset-0 z-10">
@@ -66,17 +65,17 @@ export default function WhyChooseUsPage() {
           >
             <span className={`inline-flex items-center px-4 py-2 rounded-full font-semibold text-sm tracking-wider border ${
               resolvedTheme === 'dark'
-                ? 'bg-gradient-to-r from-sky-900 to-blue-900 text-sky-300 border-sky-700'
-                : 'bg-gradient-to-r from-sky-100 to-blue-100 text-sky-700 border-sky-200'
+                ? 'bg-sky-900 text-sky-300 border-sky-700'
+                : 'bg-sky-100 text-sky-700 border-sky-200'
             }`}>
               Why Choose Us
             </span>
 
             <h1 className={`text-4xl md:text-6xl font-bold leading-tight ${
               resolvedTheme === 'dark'
-                ? 'bg-gradient-to-r from-gray-100 via-gray-200 to-sky-300'
-                : 'bg-gradient-to-r from-gray-900 via-gray-800 to-sky-800'
-            } bg-clip-text text-transparent`}>
+                ? 'text-gray-100'
+                : 'text-gray-900'
+            }`}>
               Driving Excellence Every Mile
             </h1>
 
@@ -207,27 +206,6 @@ export default function WhyChooseUsPage() {
               </div>
             </motion.div>
 
-          </motion.div>
-
-          {/* CTA Button */}
-          <motion.div 
-            className="pt-4"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.3 }}
-            transition={{ duration: 0.6, delay: 1.2, ease: "easeOut" }}
-          >
-            <motion.button 
-              className={`px-6 py-3 font-semibold rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300 text-sm ${
-                resolvedTheme === 'dark'
-                  ? 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white'
-                  : 'bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-600 hover:to-blue-700 text-white'
-              }`}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Explore Our Fleet
-            </motion.button>
           </motion.div>
         </motion.div>
       </motion.section>

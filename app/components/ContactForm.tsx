@@ -322,7 +322,7 @@ export default function ContactForm() {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-bold text-tirtiaryary mb-2 uppercase tracking-wider">
+                    <label htmlFor="email" className="block text-sm font-bold text-tirtiary mb-2 uppercase tracking-wider">
                       Email Address
                     </label>
                     <div className="relative">

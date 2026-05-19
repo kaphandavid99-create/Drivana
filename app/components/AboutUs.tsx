@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useTheme } from "../contexts/ThemeContext";
+import Link from "next/link";
 
 export default function AboutUs() {
   const { resolvedTheme } = useTheme();
@@ -49,9 +50,9 @@ export default function AboutUs() {
             customer experience designed to make every journey memorable.
           </p>
 
-          <button className="mt-8 bg-green-500 hover:bg-green-600 transition-all duration-300 text-white px-10 py-4 rounded-full text-lg font-semibold shadow-md">
+          <Link href="/about" className="mt-8 inline-block bg-green-500 hover:bg-green-600 transition-all duration-300 text-white px-10 py-4 rounded-full text-lg font-semibold shadow-md">
             Learn More
-          </button>
+          </Link>
         </div>
 
         {/* Right Image */}

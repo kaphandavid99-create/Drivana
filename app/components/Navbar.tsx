@@ -163,8 +163,8 @@ priority
 />
 </div>
 </Link>
-{/* Desktop Navigation - Left of Center */}
-<div className="hidden md:flex items-center justify-center flex-1 mr-[120px]">
+{/* Desktop Navigation - Centered */}
+<div className="hidden md:flex items-center justify-center flex-1">
 {navLinks.map((link) => {
 const isActive = pathname === link.href;
 const Icon = link.icon;
@@ -174,8 +174,8 @@ key={link.name}
 href={link.href}
 className={`relative px-6 py-2 text-sm font-medium transition-all duration-200 rounded-lg ${
 resolvedTheme === 'light' 
-? 'text-sky-500 hover:text-white' 
-: 'text-white hover:text-sky-400'
+? 'text-sky-500 hover:text-red-500' 
+: 'text-white hover:text-red-500'
 }`}
 >
 <span className="flex items-center gap-2">
@@ -197,8 +197,8 @@ resolvedTheme === 'light'
 onClick={() => setIsSearchOpen(!isSearchOpen)}
 className={`p-2 sm:p-2.5 rounded-full transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center ${
 resolvedTheme === 'light'
-? 'text-sky-500 hover:text-white hover:bg-muted/50'
-: 'text-white hover:text-sky-400 hover:bg-muted/50'
+? 'text-sky-500 hover:text-red-500 hover:bg-muted/50'
+: 'text-white hover:text-red-500 hover:bg-muted/50'
 }`}
 aria-label="Toggle search"
 >
@@ -211,8 +211,8 @@ aria-label="Toggle search"
 href="/wishlist"
 className={`relative p-2 sm:p-2.5 rounded-full transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center ${
 resolvedTheme === 'light'
-? 'text-sky-500 hover:text-white hover:bg-muted/50'
-: 'text-white hover:text-sky-400 hover:bg-muted/50'
+? 'text-sky-500 hover:text-red-500 hover:bg-muted/50'
+: 'text-white hover:text-red-500 hover:bg-muted/50'
 }`}
 aria-label="Wishlist"
 >
@@ -358,8 +358,8 @@ priority
 onClick={() => setIsSearchOpen(!isSearchOpen)}
 className={`p-2 sm:p-2.5 rounded-full transition-all duration-200 group min-w-[44px] min-h-[44px] flex items-center justify-center ${
 resolvedTheme === 'light'
-? 'text-sky-500 hover:text-sky-600 hover:bg-gray-100'
-: 'text-white hover:text-sky-400 hover:bg-white/10'
+? 'text-sky-500 hover:text-red-500 hover:bg-gray-100'
+: 'text-white hover:text-red-500 hover:bg-white/10'
 }`}
 aria-label="Toggle search"
 >

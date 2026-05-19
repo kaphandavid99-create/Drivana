@@ -50,17 +50,16 @@ export default function ContactForm() {
     try {
       const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
-      const autoReplyTemplateId = process.env.NEXT_PUBLIC_EMAILJS_AUTOREPLY_TEMPLATE_ID;
       const publicKey = process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY;
 
-      console.log("EmailJS Config:", { serviceId, templateId, autoReplyTemplateId, publicKey: publicKey ? "***" : "missing" });
+      console.log("EmailJS Config:", { serviceId, templateId, publicKey: publicKey ? "***" : "missing" });
 
       if (!serviceId || !templateId || !publicKey) {
         throw new Error("EmailJS configuration is missing. Please check your environment variables.");
       }
 
-      // Send notification email to you
-      const notificationParams = {
+      // Send user's message to kaphandavid99@gmail.com
+      const emailParams = {
         from_name: formData.name,
         from_email: formData.email,
         phone: formData.phone,
@@ -69,20 +68,7 @@ export default function ContactForm() {
         to_email: "kaphandavid99@gmail.com",
       };
 
-      await emailjs.send(serviceId, templateId, notificationParams);
-
-      // Send auto-reply email to user
-      if (autoReplyTemplateId) {
-        const autoReplyParams = {
-          to_name: formData.name,
-          to_email: formData.email,
-          from_name: "Drivana Team",
-          from_email: "kaphandavid99@gmail.com",
-          message: formData.message
-        };
-
-        await emailjs.send(serviceId, autoReplyTemplateId, autoReplyParams);
-      }
+      await emailjs.send(serviceId, templateId, emailParams);
 
       setIsSubmitting(false);
       setIsSubmitted(true);
@@ -148,7 +134,20 @@ export default function ContactForm() {
               transition={{ duration: 0.6 }}
               className="space-y-4"
             >
-              <div className="group relative p-4 rounded-xl bg-zinc-900 border-2 border-zinc-800 hover:border-sky-500 transition-all duration-300">
+              <div className="relative rounded-2xl overflow-hidden border-2 border-sky-500">
+                {/* Car Image Background */}
+                <div 
+                  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+                  style={{
+                    backgroundImage: "url('/Cars/Kia%20EV6%20%E2%80%93%20Where%20Style%20Meets%20Electric%20Power%20%E2%9A%A1%F0%9F%9A%98.jpeg')",
+                  }}
+                />
+                {/* Dark Overlay */}
+                <div className="absolute inset-0 bg-black/40" />
+                
+                {/* Content */}
+                <div className="relative p-6 space-y-4">
+                  <div className="group relative p-4 rounded-xl bg-dler-/30c-800 hover:border-sky-500 transition-all duration-300">
                 <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-sky-500 rounded-tl-lg" />
                 <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-sky-500 rounded-tr-lg" />
                 <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-sky-500 rounded-bl-lg" />
@@ -166,7 +165,7 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              <div className="group relative p-4 rounded-xl bg-zinc-900 border-2 border-zinc-800 hover:border-sky-500 transition-all duration-300">
+              <div className="group relative p-4 rounded-xl bg-black/30 border-2 border-zinc-800 hover:border-sky-500 transition-all duration-300">
                 <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-sky-500 rounded-tl-lg" />
                 <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-sky-500 rounded-tr-lg" />
                 <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-sky-500 rounded-bl-lg" />
@@ -184,7 +183,7 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              <div className="group relative p-4 rounded-xl bg-zinc-900 border-2 border-zinc-800 hover:border-sky-500 transition-all duration-300">
+              <div className="group relative p-4 rounded-xl bg-black/30 border-2 border-zinc-800 hover:border-sky-500 transition-all duration-300">
                 <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-sky-500 rounded-tl-lg" />
                 <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-sky-500 rounded-tr-lg" />
                 <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-sky-500 rounded-bl-lg" />
@@ -202,7 +201,7 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              <div className="group relative p-4 rounded-xl bg-zinc-900 border-2 border-zinc-800 hover:border-sky-500 transition-all duration-300">
+              <div className="group relative p-4 rounded-xl bg-black/30 border-2 border-zinc-800 hover:border-sky-500 transition-all duration-300">
                 <div className="absolute top-0 left-0 w-2 h-2 border-t-2 border-l-2 border-sky-500 rounded-tl-lg" />
                 <div className="absolute top-0 right-0 w-2 h-2 border-t-2 border-r-2 border-sky-500 rounded-tr-lg" />
                 <div className="absolute bottom-0 left-0 w-2 h-2 border-b-2 border-l-2 border-sky-500 rounded-bl-lg" />
@@ -218,6 +217,8 @@ export default function ContactForm() {
                     <p className="text-white">Saturday: 10am - 4pm</p>
                     <p className="text-white">Sunday: Closed</p>
                   </div>
+                </div>
+              </div>
                 </div>
               </div>
             </motion.div>
@@ -278,7 +279,7 @@ export default function ContactForm() {
                 
                 <form onSubmit={handleSubmit} className="space-y-5">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-bold text-muted-foreground mb-2 uppercase tracking-wider">
+                    <label htmlFor="name" className="block text-sm font-bold text-white mb-2 uppercase tracking-wider">
                       Full Name
                     </label>
                     <div className="relative">
@@ -297,7 +298,7 @@ export default function ContactForm() {
                   </div>
 
                   <div>
-                    <label htmlFor="email" className="block text-sm font-bold text-tertiary mb-2 uppercase tracking-wider">
+                    <label htmlFor="email" className="block text-sm font-bold text-tirtiaryary mb-2 uppercase tracking-wider">
                       Email Address
                     </label>
                     <div className="relative">
@@ -316,7 +317,7 @@ export default function ContactForm() {
                   </div>
 
                   <div>
-                    <label htmlFor="phone" className="block text-sm font-bold text-tertiary mb-2 uppercase tracking-wider">
+                    <label htmlFor="phone" className="block text-sm font-bold text-white mb-2 uppercase tracking-wider">
                       Phone Number <span className="text-secondary font-normal">(Optional)</span>
                     </label>
                     <div className="relative">
@@ -334,7 +335,7 @@ export default function ContactForm() {
                   </div>
 
                   <div>
-                    <label htmlFor="message" className="block text-sm font-bold text-tertiary mb-2 uppercase tracking-wider">
+                    <label htmlFor="message" className="block text-sm font-bold text-white mb-2 uppercase tracking-wider">
                       Message
                     </label>
                     <div className="relative">
@@ -393,7 +394,7 @@ export default function ContactForm() {
               
               <form className="space-y-5">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-bold text-tertiary mb-2 uppercase tracking-wider">
+                  <label htmlFor="name" className="block text-sm font-bold text-tirtiaryary mb-2 uppercase tracking-wider">
                     Full Name
                   </label>
                   <input
@@ -405,7 +406,7 @@ export default function ContactForm() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-sm font-bold text-tertiary mb-2 uppercase tracking-wider">
+                  <label htmlFor="email" className="block text-sm font-bold text-white mb-2 uppercase tracking-wider">
                     Email Address
                   </label>
                   <input
@@ -417,7 +418,7 @@ export default function ContactForm() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-bold text-tertiary mb-2 uppercase tracking-wider">
+                  <label htmlFor="message" className="block text-sm font-bold text-white mb-2 uppercase tracking-wider">
                     Message
                   </label>
                   <textarea

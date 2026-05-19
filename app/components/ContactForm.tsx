@@ -47,6 +47,32 @@ export default function ContactForm() {
     setIsSubmitting(true);
     setError("");
 
+    // Validation
+    if (formData.name.length < 5) {
+      setError("Name must be at least 5 characters long");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (!formData.email.includes("@gmail.com")) {
+      setError("Email must be a Gmail address (must contain @gmail.com)");
+      setIsSubmitting(false);
+      return;
+    }
+
+    const phoneDigits = formData.phone.replace(/\D/g, "");
+    if (phoneDigits.length > 0 && phoneDigits.length < 9) {
+      setError("Phone number must be at least 9 digits");
+      setIsSubmitting(false);
+      return;
+    }
+
+    if (formData.message.length < 10) {
+      setError("Message must be at least 10 characters long");
+      setIsSubmitting(false);
+      return;
+    }
+
     try {
       const serviceId = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID;
       const templateId = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID;
@@ -134,7 +160,7 @@ export default function ContactForm() {
               transition={{ duration: 0.6 }}
               className="space-y-4"
             >
-              <div className="relative rounded-2xl overflow-hidden border-2 border-sky-500">
+              <div className="relative rounded-2xl overflow-hidden border border-sky-500">
                 {/* Car Image Background */}
                 <div 
                   className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -177,7 +203,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <h3 className="text-base font-bold text-white mb-1">Email</h3>
-                    <p className="text-sky-400 font-medium">contact@drivana.com</p>
+                    <p className="text-white font-medium">contact@drivana.com</p>
                     <p className="text-sm text-white mt-1">We respond within 24 hours</p>
                   </div>
                 </div>
@@ -213,9 +239,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <h3 className="text-base font-bold text-white mb-1">Business Hours</h3>
-                    <p className="text-white">Monday - Friday: 9am - 6pm</p>
-                    <p className="text-white">Saturday: 10am - 4pm</p>
-                    <p className="text-white">Sunday: Closed</p>
+                    <p className="text-white">24/7</p>
                   </div>
                 </div>
               </div>

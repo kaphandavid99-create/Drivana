@@ -71,6 +71,7 @@ export default function Hero() {
   const [returnDate, setReturnDate] = useState("");
   const [priceRange, setPriceRange] = useState("");
   const [buyCarType, setBuyCarType] = useState("");
+  const [videoError, setVideoError] = useState(false);
   const desktopVideoRef = useRef<HTMLVideoElement>(null);
   const mobileVideoRef = useRef<HTMLVideoElement>(null);
 
@@ -89,8 +90,10 @@ export default function Hero() {
         setTimeout(() => video.play().catch(() => {}), 500);
       });
     };
-    playVideo(desktopVideoRef.current);
-    playVideo(mobileVideoRef.current);
+    if (mounted) {
+      playVideo(desktopVideoRef.current);
+      playVideo(mobileVideoRef.current);
+    }
   }, [mounted]);
 
 
@@ -109,18 +112,25 @@ export default function Hero() {
   return (
     <section className="relative min-h-screen w-full overflow-hidden">
       {/* Video Background - Desktop Only */}
-      <div className="absolute inset-0 z-0 w-full h-full hidden lg:block overflow-hidden">
+      <div className="absolute inset-0 z-0 w-full h-full hidden lg:block overflow-hidden bg-gray-900">
+        {!isVideoLoaded && !videoError && (
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-800 animate-pulse" />
+        )}
+        {videoError && (
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-800" />
+        )}
         <video
           ref={desktopVideoRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           onLoadedData={() => setIsVideoLoaded(true)}
           onCanPlay={() => setIsVideoLoaded(true)}
           onStalled={() => handleVideoStalled(desktopVideoRef)}
-          className="absolute inset-0 w-full h-full object-cover min-w-full min-h-full pointer-events-none"
+          onError={() => setVideoError(true)}
+          className={`absolute inset-0 w-full h-full object-cover min-w-full min-h-full pointer-events-none transition-opacity duration-500 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
           disablePictureInPicture
           disableRemotePlayback
         >
@@ -129,21 +139,24 @@ export default function Hero() {
       </div>
 
       {/* High Quality Video - Mobile */}
-      <div className="absolute inset-0 z-0 w-full h-full lg:hidden overflow-hidden">
+      <div className="absolute inset-0 z-0 w-full h-full lg:hidden overflow-hidden bg-gray-900">
+        {!isVideoLoaded && !videoError && (
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-800 animate-pulse" />
+        )}
+        {videoError && (
+          <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-gray-900 via-black to-gray-800" />
+        )}
         <video
           ref={mobileVideoRef}
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
           onCanPlay={() => setIsVideoLoaded(true)}
           onStalled={() => handleVideoStalled(mobileVideoRef)}
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ 
-            filter: 'contrast(1.05) saturate(1.1)',
-            transform: 'scale(1.05)',
-          }}
+          onError={() => setVideoError(true)}
+          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${isVideoLoaded ? 'opacity-100' : 'opacity-0'}`}
           disablePictureInPicture
           disableRemotePlayback
         >
